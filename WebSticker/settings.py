@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'user_web_interface',
+    'functional_tests',
 ]
 
 MIDDLEWARE = [
