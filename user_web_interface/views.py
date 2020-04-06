@@ -65,4 +65,4 @@ def view_game(request, game_id):
 
 def end_game(request, game_id):
     player = player_on_turn(game_id)
-    return HttpResponse(f'the winner is {player}.')
+    return HttpResponse(f'Congratulations, {player}, you won! <a>Play New Game</a>')

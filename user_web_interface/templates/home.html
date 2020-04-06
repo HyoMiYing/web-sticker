@@ -64,14 +64,14 @@
         <h1 class="d-flex justify-content-center">Sticker</h1>
     </div>
     <br>
-    <h3 class="d-flex justify-content-center">{{ current_player }}</h3>
+    <h3 id="id_player" class="d-flex justify-content-center">{{ current_player }}</h3>
     <div class="d-flex justify-content-center">
         <br>
         <form id="id_form" action="{% url 'make_a_move' game_id %}" method="POST">
             {% csrf_token %}
             {{ form.as_div }}
             <br>
-            <input type="submit" value="Submit">
+            <input id="id_submit_button" type="submit" value="Submit">
         </form>
 	<a>Show instructions</a>
 	<div id="id_game_rules">
