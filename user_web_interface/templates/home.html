@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticker - Home</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+        /* CUSTOM HTML CHECKBOX */
+
+            /* Make divs inline */
+            .custom-checkbox-input {
+                display: inline;
+            }
+
+            /* Hide default checkbox */
+            input[type=checkbox] {
+                display: none;
+            }
+
+            /* Set the size of a new checkbox */
+            .checkbox {
+                font-size: 16px;
+                line-height: 20px;
+            }
+
+            label {
+                cursor: pointer;
+            }
+
+            /* Styling of the checkbox before its clicked */
+            label:before {
+                display: inline-block;
+                width: 20px;
+                margin-right: 5px;
+                content: 'e';
+                text-align: center;
+                background: #000;
+                margin-bottom: 5px;
+            }
+
+            label:hover::before{
+                background: #ccc;
+                color: #ccc;
+            }
+
+            /* On Check */
+            input:checked ~ label::before {
+                background: #ccc;
+                color: #ccc;
+            }
+
+
+            /* FORM STYLING */
+            /* Alling cards horizontally */
+            form {
+                text-align: center;
+            }
+    </style>
+</head>
+<body>
+    <br>
+    <div class="container"></div>
+        <h1 class="d-flex justify-content-center">Sticker</h1>
+    </div>
+    <br>
+    <h3 class="d-flex justify-content-center">{{ current_player }}</h3>
+    <div class="d-flex justify-content-center">
+        <br>
+        <form id="id_form" action="{% url 'make_a_move' game_id %}" method="POST">
+            {% csrf_token %}
+            {{ form.as_div }}
+            <br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    <script>
+        // Add breakspaces
+        window.onload = function breakSpaceTheCards () {
+            let allCards = document.getElementsByTagName('label');
+            let form = document.getElementById('id_form');
+
+            for (var index = 0; index < allCards.length; index++) {
+                if (allCards[index].htmlFor.endsWith('0')) {
+                    form.insertBefore(document.createElement('br'), allCards[index].parentElement);
+                }
+            };
+        }
+    </script>
+</body>
+</html>
