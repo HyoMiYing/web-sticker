@@ -127,20 +127,31 @@ class FunctionalTest(LiveServerTestCase):
         cards_in_second_row = self.browser.find_elements_by_css_selector('label[for^="id_row1card"]')
         self.assertEquals(len(cards_in_second_row), 3, f'There are {cards_in_second_row} cards in second row. There should be only 3')
 
-        # Satisfied, they both go to party.
+        # Satisfied, they both go party.
 
 
-#    def test_submitting_empty_form_returns_error_message(self):
-        
+    def test_submitting_empty_form_returns_error_message(self):
         # The Bamboozler goes to visit the Sticker website
-#        self.browser.get(self.live_server_url)
+        self.browser.get(self.live_server_url)
 
         # He sees a new game form, full of cards. The Bamboozler
         # decides to submit an empty form.
-#        submit_button = self.browser.find_element_by_id('id_submit_button')
-#        submit_button.click()
+        submit_button = self.browser.find_element_by_id('id_submit_button')
+        submit_button.click()
 
-        # Next pomodoro: Finish the test and guide yourself with the example from github :)
+        # The page submits but returns with an error
+        self.assertIn('You must select at least one card', self.browser.find_element_by_class_name('errorlist').text)
 
-# Write test for error messages (no card selected)
-# Cards from different rows (error message or just invalid input)
+    def test_cannot_submit_cards_from_different_rows(self):
+	# Cards from different rows (error message or just invalid input)
+        # The Bamboozler once again visits the Sticker website
+        self.browser.get(self.live_server_url)
+
+        # Now The Bamboozler has a new plan:
+        # he will submit cards from different rows!
+
+        # Next pomodoro: Hey :D
+	#			Just check out the javascript code with tests
+	#				from some other project. I know it's there somwhere
+	#				just after that decide what kind of FT will you write
+	#				to test it.
