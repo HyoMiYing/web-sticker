@@ -36,3 +36,8 @@ def delete_game(game_id):
         return 'Game instance deleted'
     else:
         return 'ERROR, not deleted'
+
+def get_game_information(game_id):
+    position = game_position(game_id)
+    player = player_on_turn(game_id)
+    return {'position': position, 'player': player}
