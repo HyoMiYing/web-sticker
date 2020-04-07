@@ -19,11 +19,16 @@ def player_on_turn(game_id):
     game_instance = sticker_game_engine.igre[game_id]
     return game_instance.player
 
-def remove_cards(row_number, number_of_cards, game_id):
+def clean_POST_data(data):
+    csrf_token = data.pop(0)
+    row_number = int(list(data[0])[3]) + 1
+    number_of_cards = len(data)
+    return {'row_number': row_number, 'number_of_cards': number_of_cards}
+
+def remove_cards(data, game_id):
+    cleaned_POST_data = clean_POST_data(data)
     game_instance = sticker_game_engine.igre[game_id]
-
-    move_function = game_instance.move(int(row_number)+1, number_of_cards)
-
+    move_function = game_instance.move(cleaned_POST_data['row_number'], cleaned_POST_data['number_of_cards'])
     return move_function
 
 def delete_game(game_id):
