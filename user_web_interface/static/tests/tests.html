@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript tests</title>
+    <link rel="stylesheet" href="qunit-2.9.2.css">
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture">
+
+        <p id="id_instructions_text" style="visibility: hidden;">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae, fugiat consequatur doloremque aliquam qui ad itaque eum delectus facere, hic modi sunt expedita. Sequi praesentium quod libero ipsa corporis?
+        </p>
+        <a id="id_instructions_link" href="#">Show instructions</a>
+
+    </div>
+
+
+    <script src="qunit-2.9.2.js"></script>
+    <script src="../app.js"></script>
+
+    <script>
+
+        function initialize() {
+            instructionsText.style.visibility = 'hidden';
+            instructionsLink.textContent = 'Show instructions';
+        }
+
+
+        QUnit.test("Instructions should be hidden by default, link should read 'Show instructions'", function (assert) {
+            initialize();
+            assert.equal(instructionsText.style.visibility, 'hidden');
+            assert.equal(instructionsLink.textContent, 'Show instructions');
+        });
+
+        QUnit.test("Instructions show when link is clicked, link should read 'Hide instructions'", function (assert) {
+            initialize();
+            instructionsLink.click();
+            assert.equal(instructionsText.style.visibility, 'visible');
+            assert.equal(instructionsLink.textContent, 'Hide instructions');
+        });
+
+        QUnit.test("Instructions dissapear after clicking the 'Hide instructions' link", function (assert) {
+            initialize();
+            instructionsLink.click();
+            instructionsLink.click();
+            assert.equal(instructionsLink.textContent, 'Show instructions');
+            assert.equal(instructionsText.style.visibility, 'hidden');
+        });
+
+    </script>
+
+</body>
+</html>
