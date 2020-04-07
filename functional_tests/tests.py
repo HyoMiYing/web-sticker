@@ -149,7 +149,15 @@ class FunctionalTest(StaticLiveServerTestCase):
 
         # Now The Bamboozler has a new plan:
         # he will submit cards from different rows!
+        card_1_0 = self.browser.find_element_by_css_selector('label[for="id_row1card0"]')
+        card_1_0.click()
+        card_2_0 = self.browser.find_element_by_css_selector('label[for="id_row2card0"]')
+        card_2_0.click()
 
+        # Then he clicks the submit button
+        submit_button = self.browser.find_element_by_id('id_submit_button')
+        submit_button.click()
+        time.sleep(2)
         # Next pomodoro: Hey :D
 	#			Just check out the javascript code with tests
 	#				from some other project. I know it's there somwhere

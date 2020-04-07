@@ -21,7 +21,12 @@ def player_on_turn(game_id):
 
 def clean_POST_data(data):
     csrf_token = data.pop(0)
-    row_number = int(list(data[0])[3]) + 1
+    row_number_in_first_card = int(list(data[0])[3]) + 1
+    for card in data:
+        if (int(list(card)[3]) + 1) == row_number_in_first_card:
+            row_number = row_number_in_first_card
+        else:
+            row_number = False
     number_of_cards = len(data)
     return {'row_number': row_number, 'number_of_cards': number_of_cards}
 
