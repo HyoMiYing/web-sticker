@@ -16,7 +16,7 @@ class FunctionalTest(LiveServerTestCase):
         player_in_HTML = self.browser.find_element_by_id('id_player').text
         self.assertEqual(current_player, player_in_HTML)
 
-    def remove_cards_from_row(self, row_number, number_of_cards):
+    def remove_cards_from_row(self, number_of_cards, row_number):
         # Select all cards from row
         chosen_cards = self.browser.find_elements_by_css_selector(f'label[for^="id_row{row_number-1}card"]')
         number_of_chosen_cards = len(chosen_cards)
@@ -64,7 +64,7 @@ class FunctionalTest(LiveServerTestCase):
         self.validate_current_player('player2')
 
         # Now Rok assumes he is player2 and removes all cards from the last row
-        self.remove_cards_from_row(4, 2)
+        self.remove_cards_from_row(2, 4)
 
         # Then, again there is player1's turn and he removes 2 cards from 2nd row
         self.validate_current_player('player1')
@@ -72,23 +72,75 @@ class FunctionalTest(LiveServerTestCase):
 
         # 'player2' then removes all cards in the 3rd row
         self.validate_current_player('player2')
-        self.remove_cards_from_row(3, 5)
+        self.remove_cards_from_row(5, 3)
 
         # Now there's only player1's turn and he removes all the cards left in the 4th row
         self.validate_current_player('player1')
-        self.remove_cards_from_row(4, 5)
+        self.remove_cards_from_row(5, 4)
 
         # Now, player2 has only one option - to remove the last card from the board, which was in the 2nd row
         self.validate_current_player('player2')
-        self.remove_cards_from_row(2, 1)
+        self.remove_cards_from_row(1, 2)
 
         # The game is over. Winner is player1 (because player2 picked up the last card)
         self.assertIn('player1, you won!', self.browser.find_element_by_tag_name('body').text)
         # And there is also a link to another game
         self.browser.find_element_by_link_text('Play New Game')
 
-   def test_multiple_players_can_play_on_different_urls(self):
-        # next day: write out this test... help yourself with the example in TDD book.
+    def test_multiple_players_can_play_on_different_urls(self):
+        # Rok visits the homepage
+        self.browser.get(self.live_server_url)
+
+        # He starts new game
+        self.validate_current_player('player1')
+        self.remove_cards_from_row(3, 2)
+        cards_in_second_row = self.browser.find_elements_by_css_selector('label[for^="id_row1card"]')
+
+        # He notices that his game has a unique URL
+        rok_game_url = self.browser.current_url
+        self.assertRegex(rok_game_url, '/game/.+')
+
+        # Now a user Dino comes along to the site
+        
+        ## We use a new browser session to make sure
+        ## no cookies are giving us information about Rok
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+
+        # Dino visits the home page.
+        # There is no sign of Rok's moves!
+        self.browser.get(self.live_server_url)
+        cards_in_second_row = self.browser.find_elements_by_css_selector('label[for^="id_row1card"]')
+        self.assertEquals(len(cards_in_second_row), 3, f'There are {cards_in_second_row} cards in second row. There should be only 3')
+
+        # Dino starts his own game
+        self.validate_current_player('player1')
+        self.remove_cards_from_row(1, 1)
+
+        # Dino gets his own unique URL
+        self.validate_current_player('player2')
+        dino_game_url = self.browser.current_url
+        self.assertRegex(dino_game_url, '/game/.+')
+        self.assertNotEqual(dino_game_url, rok_game_url)
+
+        # And once again, there is no sign of Rok's move
+        cards_in_second_row = self.browser.find_elements_by_css_selector('label[for^="id_row1card"]')
+        self.assertEquals(len(cards_in_second_row), 3, f'There are {cards_in_second_row} cards in second row. There should be only 3')
+
+        # Satisfied, they both go to party.
+
+
+#    def test_submitting_empty_form_returns_error_message(self):
+        
+        # The Bamboozler goes to visit the Sticker website
+#        self.browser.get(self.live_server_url)
+
+        # He sees a new game form, full of cards. The Bamboozler
+        # decides to submit an empty form.
+#        submit_button = self.browser.find_element_by_id('id_submit_button')
+#        submit_button.click()
+
+        # Next pomodoro: Finish the test and guide yourself with the example from github :)
 
 # Write test for error messages (no card selected)
 # Cards from different rows (error message or just invalid input)
