@@ -1,4 +1,4 @@
-let instructionsText = document.getElementById('id_instructions_text');
+let instructionsText = document.getElementById('id_game_rules');
 let instructionsLink = document.getElementById('id_instructions_link');
 
 instructionsLink.addEventListener('click', showInstructions);
@@ -30,13 +30,13 @@ function getAllRowsButThisOne(clickedRow) {
     }
 }
         
-for (let row of rows) {
+/*for (let row of rows) {
     row.addEventListener('click', function () {
 
         getAllRowsButThisOne(row);
     });
 }
-
+*/
 function uncheckBoxesInOtherRows() {
     console.log(pa.id);
     // var allRowsButThisOne = rows - 

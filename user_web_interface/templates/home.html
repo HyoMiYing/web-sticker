@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sticker - Home</title>
@@ -73,14 +74,15 @@
             <br>
             <input id="id_submit_button" type="submit" value="Submit">
         </form>
-	<a>Show instructions</a>
-	<div id="id_game_rules">
+	<a id="id_instructions_link" href="#">Show instructions</a>
+	<div id="id_game_rules" style="visibility: hidden">
 	There are 2 players.
 	Eash player picks up one or more cards on each turn.
 	Picked up cards must all come from the same row.
 	The player who picks up the last card, loses.	
 	</div>
     </div>
+    <script src="{% static 'app.js' %}"></script>
     <script>
         // Add breakspaces
         window.onload = function breakSpaceTheCards () {
