@@ -55,6 +55,25 @@
             form {
                 text-align: center;
             }
+
+            /* errors */
+            .errorlist {
+                list-style: none;
+            }
+
+            /* CENTERING */
+            h1, h3 {
+                text-align: center;
+            }
+
+            #id_instructions_link {
+                display: block;
+            }
+
+            #id_instructions_link, #id_game_rules {
+                text-align: center;
+            }
+
     </style>
 {% endblock %}
 
@@ -73,12 +92,15 @@
             <br>
             <input id="id_submit_button" type="submit" value="Submit">
         </form>
+        <br>
+        <br>
 	<a id="id_instructions_link" href="#">Show instructions</a>
-	<div id="id_game_rules" style="visibility: hidden">
-	There are 2 players.
-	Eash player picks up one or more cards on each turn.
-	Picked up cards must all come from the same row.
-	The player who picks up the last card, loses.	
+    <div id="id_game_rules" style="visibility: hidden">
+        <br>
+	There are 2 players. <br>
+	Eash player picks up one or more cards on each turn. <br>
+	Picked up cards must all come from the same row. <br>
+	The player who picks up the last card, loses. <br>
 	</div>
     </div>
     <script src="{% static 'app.js' %}"></script>
