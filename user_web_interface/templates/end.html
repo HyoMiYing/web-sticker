@@ -2,8 +2,21 @@
 
 {% block page_title %}Game Over{% endblock %}
 
+{% block page_head %}
+<style>
+    #id_message {
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
 {% block body %}
-<h1>Game Over</h1>
-<p><strong>{{ player }}, you won!</strong></p>
-<a href="/">Play New Game</a>
+<br>
+<br>
+<br>
+<div id="id_message">
+    <h1>Game Over</h1>
+    <p><strong>{{ player }}, you won!</strong></p>
+    <a href="/">Play New Game</a>
+</div>
 {% endblock %}
