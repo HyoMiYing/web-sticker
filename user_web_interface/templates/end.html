@@ -3,20 +3,17 @@
 {% block page_title %}Game Over{% endblock %}
 
 {% block page_head %}
-<style>
-    #id_message {
-        text-align: center;
-    }
-</style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'end.css' %}">
 {% endblock %}
 
 {% block body %}
-<br>
-<br>
-<br>
-<div id="id_message">
-    <h1>Game Over</h1>
-    <p><strong>{{ player }}, you won!</strong></p>
-    <a href="/">Play New Game</a>
-</div>
+    <br>
+    <br>
+    <br>
+    <div id="id_message">
+        <h1>Game Over</h1>
+        <p><strong>{{ player }}, you won!</strong></p>
+        <a href="/">Play New Game</a>
+    </div>
 {% endblock %}

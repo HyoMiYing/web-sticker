@@ -4,77 +4,7 @@
 
 {% block page_head %}
     {% load static %}
-    <style>
-        /* CUSTOM HTML CHECKBOX */
-
-            /* Make divs inline */
-            .custom-checkbox-input {
-                display: inline;
-            }
-
-            /* Hide default checkbox */
-            input[type=checkbox] {
-                display: none;
-            }
-
-            /* Set the size of a new checkbox */
-            .checkbox {
-                font-size: 16px;
-                line-height: 20px;
-            }
-
-            label {
-                cursor: pointer;
-            }
-
-            /* Styling of the checkbox before its clicked */
-            label:before {
-                display: inline-block;
-                width: 20px;
-                margin-right: 5px;
-                content: 'e';
-                text-align: center;
-                background: #000;
-                margin-bottom: 5px;
-            }
-
-            label:hover::before{
-                background: #ccc;
-                color: #ccc;
-            }
-
-            /* On Check */
-            input:checked ~ label::before {
-                background: #ccc;
-                color: #ccc;
-            }
-
-
-            /* FORM STYLING */
-            /* Alling cards horizontally */
-            form {
-                text-align: center;
-            }
-
-            /* errors */
-            .errorlist {
-                list-style: none;
-            }
-
-            /* CENTERING */
-            h1, h3 {
-                text-align: center;
-            }
-
-            #id_instructions_link {
-                display: block;
-            }
-
-            #id_instructions_link, #id_game_rules {
-                text-align: center;
-            }
-
-    </style>
+    <link rel="stylesheet" href="{% static 'home.css' %}">
 {% endblock %}
 
 {% block body %}
