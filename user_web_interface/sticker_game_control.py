@@ -12,7 +12,10 @@ def new_game():
     
 def game_position(game_id):
     dictionary_of_all_game_instances = sticker_game_engine.igre
-    current_game_instance = dictionary_of_all_game_instances[game_id]
+    try:
+        current_game_instance = dictionary_of_all_game_instances[game_id]
+    except KeyError:
+        return False
     return current_game_instance.position
 
 def player_on_turn(game_id):
@@ -44,5 +47,10 @@ def delete_game(game_id):
 
 def get_game_information(game_id):
     position = game_position(game_id)
+    if not position:
+        return False
     player = player_on_turn(game_id)
     return {'position': position, 'player': player}
+
+def delete_game(game_id):
+    sticker_game_engine.remove_id(game_id)
