@@ -54,3 +54,10 @@ def get_game_information(game_id):
 
 def delete_game(game_id):
     sticker_game_engine.remove_id(game_id)
+
+def get_all_games_data():
+    all_games_data = []
+    for game in sticker_game_engine.igre:
+        information_dictionary = {'game_id': game, 'game_position': game_position(game), 'player_on_turn': player_on_turn(game)}
+        all_games_data.append(information_dictionary)
+    return all_games_data
