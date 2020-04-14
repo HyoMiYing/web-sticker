@@ -1,4 +1,5 @@
 from sticker import Sticker, Igra
+from threading import Timer
 
 sticker_game_engine = Sticker()
 
@@ -19,7 +20,10 @@ def game_position(game_id):
     return current_game_instance.position
 
 def player_on_turn(game_id):
-    game_instance = sticker_game_engine.igre[game_id]
+    try:
+        game_instance = sticker_game_engine.igre[game_id]
+    except KeyError:
+        return False
     return game_instance.player
 
 def clean_POST_data(data):
@@ -44,6 +48,10 @@ def delete_game(game_id):
         return 'Game instance deleted'
     else:
         return 'ERROR, not deleted'
+
+def delete_game_after_x_seconds(game_id, time_in_seconds):
+    new_thread = Timer(time_in_seconds, delete_game(game_id))
+    new_thread.start()
 
 def get_game_information(game_id):
     position = game_position(game_id)

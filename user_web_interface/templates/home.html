@@ -10,11 +10,11 @@
 {% block body %}
     <br>
     <div class="container"></div>
-        <h1 class="d-flex justify-content-center">Sticker</h1>
+        <h1>Sticker</h1>
     </div>
     <br>
-    <h3 id="id_player" class="d-flex justify-content-center">{{ current_player }}</h3>
-    <div class="d-flex justify-content-center">
+    <h3 id="id_player">{{ current_player }}</h3>
+    <div>
         <br>
         <form id="id_form" action="{% url 'make_a_move' game_id %}" method="POST">
             {% csrf_token %}

@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
-from user_web_interface.sticker_game_control import new_game, game_position, player_on_turn, remove_cards, delete_game, print_all_games, get_game_information, delete_game, get_all_games_data
+from user_web_interface.sticker_game_control import new_game, game_position, player_on_turn, remove_cards, print_all_games, get_game_information, get_all_games_data, delete_game_after_x_seconds, delete_game
 from user_web_interface.forms import GameForm
 import re
 
@@ -29,12 +29,20 @@ def make_a_move(request, game_id):
     
 def view_game(request, game_id):
     game_information = get_game_information(game_id)
+    # In case the game ended
+    if game_information == False:
+        return redirect('end_game', game_id)
+    elif game_information['position'] == [0, 0, 0, 0]:
+        return redirect('end_game', game_id)
     form = GameForm(game_information['position'])
     return render(request, 'game.html', {'form':form, 'current_player':game_information['player'], 'game_id':game_id})
 
 def end_game(request, game_id):
     player = player_on_turn(game_id)
-    delete_game(game_id)
+    if player == False:
+        return redirect('home')
+    # delete_game(game_id)
+    # delete_game_after_x_seconds(game_id, 120)
     return render(request, 'end.html', {'player' : player})
 
 def admin_page(request):

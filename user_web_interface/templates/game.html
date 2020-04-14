@@ -51,23 +51,32 @@
 	}
 
 	function updateDOMIfNeeded(){
+		// AJAX documentation: https://api.jquery.com/jquery.ajax/
 		$.ajax({
 			synch: 'true',
 			type: 'GET',
 			url: '{% url 'view_game' game_id %}',
 			dataType: 'html',
 			success: function(data){
-				var updatedForm = data.slice(data.indexOf('<input type="hidden" name="csrfmiddlewaretoken"'), data.indexOf('</form>'));
-				var updatedPlayer = data.slice(data.indexOf('class="player_shower"') + 22, data.indexOf('</h3>'));
-				var realNumberOfCards = countCardsInString(updatedForm);
-				var numberOfCardsInDOM = countCardsInDOM();
-				if (realNumberOfCards == numberOfCardsInDOM) {
+				if (data.indexOf("ajax") == -1) {
+					console.log('This is not game.html anymore!');
+					location.reload();
 				} else {
-					$('#id_form').html(updatedForm);
-					$('#id_player').html(updatedPlayer);
-					breakSpaceTheCards();
-				}	
-			}
+					var updatedForm = data.slice(data.indexOf('<input type="hidden" name="csrfmiddlewaretoken"'), data.indexOf('</form>'));
+					var updatedPlayer = data.slice(data.indexOf('class="player_shower"') + 22, data.indexOf('</h3>'));
+					var realNumberOfCards = countCardsInString(updatedForm);
+					var numberOfCardsInDOM = countCardsInDOM();
+					if (realNumberOfCards == numberOfCardsInDOM) {
+					} else {
+						$('#id_form').html(updatedForm);
+						$('#id_player').html(updatedPlayer);
+						breakSpaceTheCards();
+					}
+				}
+			},
+			error: function (xhr, textStatus, errorThrown) {
+					console.log('sumthin\'s wrong');
+				}
 		});
 	}
     </script>

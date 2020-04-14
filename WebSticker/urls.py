@@ -22,4 +22,5 @@ urlpatterns = [
     path('make_a_move/<int:game_id>', views.make_a_move, name='make_a_move'),
     path('game/<int:game_id>', views.view_game, name='view_game'),
     path('end_game/<int:game_id>', views.end_game, name='end_game'),
+    path('admin', views.admin_page, name='admin'),
 ]
