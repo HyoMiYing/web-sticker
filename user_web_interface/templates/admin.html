@@ -4,28 +4,33 @@
 
 {% block page_head %}
     {% load static %}
-    <link rel="stylesheet" href="{% static 'end.css' %}">
+    <link rel="stylesheet" href="{% static 'admin.css' %}">
 {% endblock %}
 
 {% block body %}
     <br>
-    <br>
+	<br>
+	<h1>Sticker Admin Page</h1>
+	<p>Used to see all games and their states.</p>
     <br>
     <div id="id_message">
         <table>
 		<tr>
-			<th>Game ID</th>
-			<th>Game position</th>
-			<th>Current player on turn</th>
+			<th>Game ID</th>  
+			<th>Game position</th>  
+			<th>Current player on turn</th>  
 		</tr>
 		{% for game_information in all_games_data %}
 			<tr>
-				<th>{{ game_information.game_id }}</th>
-				<th>{{ game_information.game_position }}</th>
-				<th>{{ game_information.player_on_turn }}</th>
+				<td>{{ game_information.game_id }}</td>
+				<td>{{ game_information.game_position }}</td>
+				<td>{{ game_information.player_on_turn }}</td>
 			</tr>
 		{% endfor %}
 	</table>
+	<br>
+	<br>
+	<br>
 	<a href="/">Return</a>
     </div>
 {% endblock %}
