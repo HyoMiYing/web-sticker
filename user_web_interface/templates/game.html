@@ -5,6 +5,7 @@
 {% block page_head %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'home.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -34,6 +35,26 @@
 	</div>
     </div>
     <script src="{% static 'app.js' %}"></script>
+    <script>
+	// Do AJAX to keep game fresh
+        setInterval(refreshGame, 500);
+
+	function refreshGame(){
+		var newDate = new Date();
+		var time = newDate.getMinutes() + ':' + newDate.getSeconds();
+		console.log('geym is refreshed');
+		console.log(time);
+
+		$.ajax({
+			synch: 'true',
+			type: 'GET',
+			url: '{% url 'view_game' game_id %}',
+			success: function(data){
+				$('#id_form').html(data);
+			}
+		});
+	}
+    </script>
     <script>
         // Add breakspaces
         window.onload = function breakSpaceTheCards () {

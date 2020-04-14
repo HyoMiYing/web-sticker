@@ -30,7 +30,7 @@ def make_a_move(request, game_id):
 def view_game(request, game_id):
     game_information = get_game_information(game_id)
     form = GameForm(game_information['position'])
-    return render(request, 'home.html', {'form':form, 'current_player':game_information['player'], 'game_id':game_id})
+    return render(request, 'game.html', {'form':form, 'current_player':game_information['player'], 'game_id':game_id})
 
 def end_game(request, game_id):
     player = player_on_turn(game_id)
