@@ -11,11 +11,11 @@
 {% block body %}
     <br>
     <div class="container"></div>
-        <h1 class="d-flex justify-content-center">Sticker</h1>
+        <h1>Sticker</h1>
     </div>
     <br>
-    <h3 id="id_player" class="d-flex justify-content-center">{{ current_player }}</h3>
-    <div class="d-flex justify-content-center">
+    <h3 id="id_player" class="player_shower">{{ current_player }}</h3>
+    <div>
         <br>
         <form id="id_form" action="{% url 'make_a_move' game_id %}" method="POST">
             {% csrf_token %}
@@ -37,27 +37,44 @@
     <script src="{% static 'app.js' %}"></script>
     <script>
 	// Do AJAX to keep game fresh
-        setInterval(refreshGame, 500);
+	setInterval(updateDOMIfNeeded, 500);
 
-	function refreshGame(){
-		var newDate = new Date();
-		var time = newDate.getMinutes() + ':' + newDate.getSeconds();
-		console.log('geym is refreshed');
-		console.log(time);
+	function countCardsInDOM() {
+		let allCards = document.getElementsByTagName('label');
+		let numberOfCards = allCards.length;
+		return numberOfCards;
+	}
 
+	function countCardsInString(formString) {
+		var count = (formString.match(/id="id_row/g) || []).length;
+		return count
+	}
+
+	function updateDOMIfNeeded(){
 		$.ajax({
 			synch: 'true',
 			type: 'GET',
 			url: '{% url 'view_game' game_id %}',
+			dataType: 'html',
 			success: function(data){
-				$('#id_form').html(data);
+				var updatedForm = data.slice(data.indexOf('<input type="hidden" name="csrfmiddlewaretoken"'), data.indexOf('</form>'));
+				var updatedPlayer = data.slice(data.indexOf('class="player_shower"') + 22, data.indexOf('</h3>'));
+				var realNumberOfCards = countCardsInString(updatedForm);
+				var numberOfCardsInDOM = countCardsInDOM();
+				if (realNumberOfCards == numberOfCardsInDOM) {
+				} else {
+					$('#id_form').html(updatedForm);
+					$('#id_player').html(updatedPlayer);
+					breakSpaceTheCards();
+				}	
 			}
 		});
 	}
     </script>
     <script>
         // Add breakspaces
-        window.onload = function breakSpaceTheCards () {
+        window.onload = breakSpaceTheCards();
+		function breakSpaceTheCards () {
             let allCards = document.getElementsByTagName('label');
             let form = document.getElementById('id_form');
 
