@@ -37,7 +37,6 @@ def end_game(request, game_id):
     delete_game(game_id)
     return render(request, 'end.html', {'player' : player})
 
-@login_required
 def admin_page(request):
     return render(request, 'admin.html', {'all_games_data': get_all_games_data()})
 
