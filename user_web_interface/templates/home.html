@@ -39,7 +39,7 @@
 	<form method="POST" action="{% url 'new_game' %}">
 		{% csrf_token %}
 		{{ form }}
-		<input type="submit" value="Start New Game">
+		<input type="submit" value="Start New Game" id="id_submit_button">
 	</form>
     </div>
 {% endblock %}
