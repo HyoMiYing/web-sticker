@@ -3,6 +3,12 @@ from threading import Timer
 
 sticker_game_engine = Sticker()
 
+#def create_custom_names_for_the_game(form_data, game_id):
+#   get the dictionary of all {'custom_games':'custom_names'}
+#
+#
+#
+
 def print_all_games():
     dictonary_of_games = sticker_game_engine.igre
     return dictonary_of_games

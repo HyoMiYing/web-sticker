@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block page_title %}Sticker Admin{% endblock %}
+{% block page_title %}Sticker Home{% endblock %}
 
 {% block page_head %}
     {% load static %}
@@ -10,8 +10,8 @@
 {% block body %}
     <br>
 	<br>
-	<h1>Sticker Admin Page</h1>
-	<p>Used to see all games and their states.</p>
+	<h1>Sticker Home Page</h1>
+	<p>All games are listed bellow.</p>
     <br>
     <div id="id_message">
         <table>
@@ -33,7 +33,12 @@
 	<br>
 	<br>
 	<br>
-	<a href="{% url 'new_game' %}">New Game</a>
+	<h2>Write The Player's names</h2>
+	<form method="POST" action="{% url 'new_game' %}">
+		{% csrf_token %}
+		{{ form }}
+		<input type="submit" value="Start New Game">
+	</form>
     </div>
 {% endblock %}
 

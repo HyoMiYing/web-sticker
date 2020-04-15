@@ -4,15 +4,20 @@ from django.urls import reverse
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from user_web_interface.sticker_game_control import new_game, game_position, player_on_turn, remove_cards, print_all_games, get_game_information, get_all_games_data, delete_game_after_x_seconds, delete_game
-from user_web_interface.forms import GameForm
+from user_web_interface.forms import GameForm, CreateNewGameForm
 import re
 
 def home(request):
-    return render(request, 'home.html', {'all_games_data': get_all_games_data()})
+    
+    return render(request, 'home.html', {'all_games_data': get_all_games_data(), 'form': CreateNewGameForm()})
 
 def create_new_game(request):
     game_id = new_game()
-    return redirect('view_game', game_id)
+    form = CreateNewGameForm(request.POST)
+    if form.is_valid():
+        create_custom_names_for_the_game(form.cleaned_data, game_id)
+        print(f'Yo yo. The form is valid. This is the form\'s cleaned data: {form.cleaned_data}')
+    #return redirect('view_game', game_id)
 
 def make_a_move(request, game_id):
     game_information = get_game_information(game_id)
