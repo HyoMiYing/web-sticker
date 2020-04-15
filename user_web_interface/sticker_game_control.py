@@ -2,12 +2,10 @@ from sticker import Sticker, Igra
 from threading import Timer
 
 sticker_game_engine = Sticker()
+dictionary_of_custom_names = {}
 
-#def create_custom_names_for_the_game(form_data, game_id):
-#   get the dictionary of all {'custom_games':'custom_names'}
-#
-#
-#
+def create_custom_names_for_the_game(form_data, game_id):
+    dictionary_of_custom_names[game_id] = {'player1': form_data['player1'], 'player2': form_data['player2']}
 
 def print_all_games():
     dictonary_of_games = sticker_game_engine.igre
@@ -30,7 +28,9 @@ def player_on_turn(game_id):
         game_instance = sticker_game_engine.igre[game_id]
     except KeyError:
         return False
-    return game_instance.player
+    current_player = game_instance.player
+    current_player_name = dictionary_of_custom_names[game_id][current_player]
+    return current_player_name
 
 def clean_POST_data(data):
     csrf_token = data.pop(0)
