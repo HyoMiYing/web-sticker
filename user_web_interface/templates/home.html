@@ -19,7 +19,7 @@
 			<th>Game ID</th>  
 			<th>Game position</th>  
 			<th>Current player on turn</th>
-			<th>Message</th>
+			<th>Description</th>
 			<th></th>  
 		</tr>
 		{% for game_information in all_games_data %}
@@ -27,7 +27,7 @@
 				<td>{{ game_information.game_id }}</td>
 				<td>{{ game_information.game_position }}</td>
 				<td>{{ game_information.player_on_turn }}</td>
-				<td>{{ game_information.message }}</td>
+				<td>{{ game_information.description }}</td>
 				<td><a href="{% url 'view_game' game_information.game_id %}">Visit Game</a></td>
 			</tr>
 		{% endfor %}

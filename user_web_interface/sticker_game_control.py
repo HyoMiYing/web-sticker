@@ -3,13 +3,13 @@ from threading import Timer
 
 sticker_game_engine = Sticker()
 dictionary_of_custom_names = {}
-dictionary_of_messages = {}
+dictionary_of_descriptions = {}
 
 def create_custom_names_for_the_game(form_data, game_id):
     dictionary_of_custom_names[game_id] = {'player1': form_data['player1'], 'player2': form_data['player2']}
 
-def create_message_for_game(message, game_id):
-    dictionary_of_messages[game_id] = message
+def create_description_for_game(description, game_id):
+    dictionary_of_descriptions[game_id] = description
 
 def print_all_games():
     dictonary_of_games = sticker_game_engine.igre
@@ -76,6 +76,6 @@ def delete_game(game_id):
 def get_all_games_data():
     all_games_data = []
     for game in sticker_game_engine.igre:
-        information_dictionary = {'game_id': game, 'game_position': game_position(game), 'player_on_turn': player_on_turn(game), 'message': dictionary_of_messages[game]}
+        information_dictionary = {'game_id': game, 'game_position': game_position(game), 'player_on_turn': player_on_turn(game), 'description': dictionary_of_descriptions[game]}
         all_games_data.append(information_dictionary)
     return all_games_data
