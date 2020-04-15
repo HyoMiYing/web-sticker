@@ -3,6 +3,7 @@ from django import forms
 class CreateNewGameForm(forms.Form):
     player1 = forms.CharField(min_length=3, max_length=20, empty_value='player1')
     player2 = forms.CharField(min_length=3, max_length=20, empty_value='player2')
+    message = forms.CharField(max_length=50)
 
 class GameForm(forms.Form):
 
