@@ -1,50 +1,39 @@
 {% extends 'base.html' %}
 
-{% block page_title %}Sticker{% endblock %}
+{% block page_title %}Sticker Admin{% endblock %}
 
 {% block page_head %}
     {% load static %}
-    <link rel="stylesheet" href="{% static 'home.css' %}">
+    <link rel="stylesheet" href="{% static 'admin.css' %}">
 {% endblock %}
 
 {% block body %}
     <br>
-    <div class="container"></div>
-        <h1>Sticker</h1>
-    </div>
+	<br>
+	<h1>Sticker Admin Page</h1>
+	<p>Used to see all games and their states.</p>
     <br>
-    <h3 id="id_player">{{ current_player }}</h3>
-    <div>
-        <br>
-        <form id="id_form" action="{% url 'make_a_move' game_id %}" method="POST">
-            {% csrf_token %}
-            {{ form.as_div }}
-            <br>
-            <input id="id_submit_button" type="submit" value="Submit">
-        </form>
-        <br>
-        <br>
-	<a id="id_instructions_link" href="#">Show instructions</a>
-    <div id="id_game_rules" style="visibility: hidden">
-        <br>
-	There are 2 players. <br>
-	Eash player picks up one or more cards on each turn. <br>
-	Picked up cards must all come from the same row. <br>
-	The player who picks up the last card, loses. <br>
-	</div>
+    <div id="id_message">
+        <table>
+		<tr>
+			<th>Game ID</th>  
+			<th>Game position</th>  
+			<th>Current player on turn</th>
+			<th></th>  
+		</tr>
+		{% for game_information in all_games_data %}
+			<tr>
+				<td>{{ game_information.game_id }}</td>
+				<td>{{ game_information.game_position }}</td>
+				<td>{{ game_information.player_on_turn }}</td>
+				<td><a href="{% url 'view_game' game_information.game_id %}">Visit Game</a></td>
+			</tr>
+		{% endfor %}
+	</table>
+	<br>
+	<br>
+	<br>
+	<a href="{% url 'new_game' %}">New Game</a>
     </div>
-    <script src="{% static 'app.js' %}"></script>
-    <script>
-        // Add breakspaces
-        window.onload = function breakSpaceTheCards () {
-            let allCards = document.getElementsByTagName('label');
-            let form = document.getElementById('id_form');
-
-            for (var index = 0; index < allCards.length; index++) {
-                if (allCards[index].htmlFor.endsWith('0')) {
-                    form.insertBefore(document.createElement('br'), allCards[index].parentElement);
-                }
-            };
-        }
-    </script>
 {% endblock %}
+

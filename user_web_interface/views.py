@@ -8,17 +8,11 @@ from user_web_interface.forms import GameForm
 import re
 
 def home(request):
-    return render(request, 'admin.html', {'all_games_data': get_all_games_data()})
+    return render(request, 'home.html', {'all_games_data': get_all_games_data()})
 
 def create_new_game(request):
     game_id = new_game()
     return redirect('view_game', game_id)
-
-def home2(request):
-    game_id = new_game()
-    game_information = get_game_information(game_id)
-    form = GameForm(game_information['position'])
-    return render(request, 'home.html', {'form':form, 'current_player':game_information['player'], 'game_id':game_id})
 
 def make_a_move(request, game_id):
     game_information = get_game_information(game_id)
