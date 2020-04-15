@@ -21,6 +21,34 @@ class FunctionalTest(StaticLiveServerTestCase):
         player_in_HTML = self.browser.find_element_by_id('id_player').text
         self.assertEqual(current_player, player_in_HTML)
 
+    def validate_current_player_in_foreign_browser(self, current_player, browser):
+        player_in_HTML = browser.find_element_by_id('id_player').text
+        self.assertEqual(current_player, player_in_HTML)
+
+    def remove_cards_from_row_in_foreign_browser(self, number_of_cards, row_number, browser):
+        # Select all cards from row
+        chosen_cards = browser.find_elements_by_css_selector(f'label[for^="id_row{row_number-1}card"]')
+        number_of_chosen_cards = len(chosen_cards)
+        # If it's okay, select them. If there are too much cards, put them away
+        # and the select the right amount of them.
+        if len(chosen_cards) == number_of_cards:
+            for card in chosen_cards:
+                card.click()
+        elif len(chosen_cards) > number_of_cards:
+            sorted_cards = chosen_cards[0:number_of_cards]
+            for card in sorted_cards:
+                card.click()
+        else:
+            return self.fail('There is not enough cards in this row!')
+
+        submit_button = browser.find_element_by_id('id_submit_button').click()
+
+        cards_in_observed_row = browser.find_elements_by_css_selector(f'label[for^="id_row{row_number-1}card"]')
+        if len(cards_in_observed_row) == number_of_chosen_cards - number_of_cards:
+            return 'Removal successful'
+        else:
+            raise AssertionError
+
     def remove_cards_from_row(self, number_of_cards, row_number):
         # Select all cards from row
         chosen_cards = self.browser.find_elements_by_css_selector(f'label[for^="id_row{row_number-1}card"]')
@@ -166,3 +194,57 @@ class FunctionalTest(StaticLiveServerTestCase):
 
         # The page submits but returns with an error
         self.assertIn('You must select at least one card', self.browser.find_element_by_class_name('errorlist').text)
+
+    def test_games_can_be_played_between_two_players_online(self):
+        # Sacre Bleu finds cool new online game
+        self.browser.get(self.live_server_url)
+
+        # He sees it is a 2 player game. He decides he will play the game with his friend, Jacques.
+        self.start_new_game('Sacre Bleu', 'Jacques', 'Bonjour Jacques, join this game!')
+
+        # Now Sacre Bleu makes a move
+        self.validate_current_player('Sacre Bleu')
+        self.remove_cards_from_row(1, 1)
+
+        # Now it is Jacques's turn
+        self.validate_current_player('Jacques')
+
+        # But Jacques isn't online yet. He doesn't even know that the game exists.
+	# Sacre Bleu decides that he will send the website's link to Jacques by SMS.
+	# He sends him an sms: "Éh! Quoi de neuf? Moi, Sacre Bleu have make a great discovery!
+	# Un grand online game, Sticker! It is for un intellectuels like tu et moi! Let's play!
+	# www.the-game-website.com"
+
+	# Now Sacre Bleu decides to wait. He leaves the Sticker tab to be open and goes to read Wikipedia
+
+	# After some time, Jacques reads Sacre Bleu's SMS and goes to the Sticker homepage.
+        self.browserJacques = webdriver.Firefox()
+        self.browserJacques.get(self.live_server_url)
+
+	# There he sees a list of all running games. He finds the description saying 'Bonjour Jacques, join this game!'
+        the_games_description_id = self.browserJacques.find_element_by_xpath('//td[text()="Bonjour Jacques, join this game!"]').get_attribute('id')
+
+        # Then he presses the Visit Game link accompanying the description
+        id_of_sacres_and_jacques_game = list(the_games_description_id)[-1]
+        the_correct_visit_game_link = self.browserJacques.find_element_by_id('id_link_to_game'+id_of_sacres_and_jacques_game)
+        the_correct_visit_game_link.click()
+
+	# Now Jacques finds himself in the game, and it is his turn!
+        self.validate_current_player_in_foreign_browser('Jacques', self.browserJacques)
+
+	# He reads the instructions and decides to remove all cards from the thrid row
+        self.remove_cards_from_row_in_foreign_browser(5, 3, self.browserJacques)
+
+	# Now It is Sacre Bleu's turn
+        self.validate_current_player_in_foreign_browser('Sacre Bleu', self.browserJacques)
+
+	# Meanwhile Sacre Bleu is reading Wikipedia.
+	# Suddenly he notices that Sticker's browser tab title is messaging him "It is your turn" and "Jacques made a move"
+        try:
+            self.assertIn('It is your turn', self.browser.title)
+            try:
+                self.assertIn('Jacques made a move', self.browser.title)
+            except:
+                self.fail('NO \'Jacques made a move\'')
+        except:
+            self.fail('NO \'its your turn\'')

@@ -56,6 +56,19 @@
 		return count
 	}
 
+	function blinkPageTitle() {
+		console.log('Hello, i am function that should be run every second');
+		var pageTitle = document.title;
+		console.log('This is the value of pageTitle before it is changed:' + pageTitle);
+		pageTitle = (pageTitle == '') ? 'Sticker' : '';
+		console.log('This is the value of pageTitle after it is changed:' + pageTitle);
+	}
+
+	function blinkTitleUntillPageIsClicked() {
+		console.log('setting interval');
+		var interval = setInterval(blinkPageTitle, 1000);
+	}
+
 	function updateDOMIfNeeded(){
 		// AJAX documentation: https://api.jquery.com/jquery.ajax/
 		$.ajax({
@@ -78,6 +91,7 @@
 						$('#id_player').html(updatedPlayer);
 						breakSpaceTheCards();
 						audio.play();
+						blinkTitleUntillPageIsClicked();
 					}
 				}
 			},

@@ -24,11 +24,11 @@
 		</tr>
 		{% for game_information in all_games_data %}
 			<tr>
-				<td>{{ game_information.game_id }}</td>
-				<td>{{ game_information.game_position }}</td>
-				<td>{{ game_information.player_on_turn }}</td>
-				<td>{{ game_information.description }}</td>
-				<td><a href="{% url 'view_game' game_information.game_id %}">Visit Game</a></td>
+				<td id="id_id_of_game{{ game_information.game_id }}">{{ game_information.game_id }}</td>
+				<td id="id_position_of_game{{ game_information.game_id }}">{{ game_information.game_position }}</td>
+				<td id="id_player_on_game{{ game_information.game_id }}">{{ game_information.player_on_turn }}</td>
+				<td id="id_description_of_game{{ game_information.game_id }}">{{ game_information.description }}</td>
+				<td id="id_link_to_game{{ game_information.game_id }}"><a href="{% url 'view_game' game_information.game_id %}">Visit Game</a></td>
 			</tr>
 		{% endfor %}
 	</table>
