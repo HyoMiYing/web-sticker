@@ -34,8 +34,14 @@
 	The player who picks up the last card, loses. <br>
 	</div>
     </div>
+    <audio id="move_sound">
+	<source src="{% static 'move_sound.mp3' %}" type="audio/mpeg">
+    </audio>
     <script src="{% static 'app.js' %}"></script>
     <script>
+	// Get audio sound
+	var audio = document.getElementById('move_sound')
+
 	// Do AJAX to keep game fresh
 	setInterval(updateDOMIfNeeded, 500);
 
@@ -71,6 +77,7 @@
 						$('#id_form').html(updatedForm);
 						$('#id_player').html(updatedPlayer);
 						breakSpaceTheCards();
+						audio.play();
 					}
 				}
 			},
