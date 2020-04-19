@@ -4,7 +4,8 @@
 
 {% block page_head %}
     {% load static %}
-    <link rel="stylesheet" href="{% static 'admin.css' %}">
+	<link rel="stylesheet" href="{% static 'admin.css' %}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -14,7 +15,7 @@
 	<p>All games are listed bellow.</p>
     <br>
     <div id="id_message">
-        <table>
+        <table id="id_dashboard_table">
 		<tr>
 			<th>Game ID</th>  
 			<th>Game position</th>  
@@ -42,5 +43,46 @@
 		<input type="submit" value="Start New Game" id="id_submit_button">
 	</form>
     </div>
-{% endblock %}
+	<script>
+		setInterval(updateGameDashboard, 500);
+	
+		function getTableFromDOM() {
+			var tableInDOM = document.getElementById('id_dashboard_table').innerHTML;
+			var tableInDOMWithoutWhitespaces = removeWhitespacesFromString(tableInDOM);
+			var tableInDOMWithoutTbodyTags = removeTbodyTagsFromString(tableInDOMWithoutWhitespaces);
+			return tableInDOMWithoutTbodyTags;
+		}
+		
+		function removeWhitespacesFromString(string) {
+			var stringWithoutWhitespaces = string.replace(/\s/g, "");
+			return stringWithoutWhitespaces;
+		}
 
+		function removeTbodyTagsFromString(tableString) {
+			var removedFrontTag = tableString.replace("<tbody>", "");
+			var removedBothTags = removedFrontTag.replace("</tbody>", "");
+			return removedBothTags;
+		}
+
+		function updateGameDashboard () {
+			$.ajax({
+				synch: 'true',
+				type: 'GET',
+				url: '{% url "home" %}',
+				dataType: 'html',
+				success: function(data) {
+					var updatedTable = data.slice(data.indexOf('<tr>'), data.indexOf('</table>'));
+					var updatedTableWithoutWhitespaces = removeWhitespacesFromString(updatedTable);
+					var currentTableWithoutWhitespaces = getTableFromDOM();
+					if (currentTableWithoutWhitespaces == updatedTableWithoutWhitespaces) {
+					} else {
+						$('#id_dashboard_table').html(updatedTable);
+					};
+				},
+				error: function() {
+					console.log('Something is wrong, AJAX call failed');
+				}
+			})
+		}
+	</script>
+{% endblock %}
