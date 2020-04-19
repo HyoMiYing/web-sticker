@@ -251,7 +251,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.assertIn('Wiki', self.browser.title)
         self.browser.switch_to.window(self.browser.window_handles[0])
         self.assertIn('Sticker', self.browser.title)
-
+        time.sleep(1)
 	# He sees it really is his turn
         self.validate_current_player('Sacre Bleu')
 	# Then Sacre Bleu says to himself: "Oh, seigneur! This webpage is très bien fait! I can go rest
