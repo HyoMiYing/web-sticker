@@ -12,10 +12,11 @@
     <br>
 	<br>
 	<h1>Sticker Home Page</h1>
-	<p>All games are listed bellow.</p>
+	<p>You can join a game or create a new one!</p>
     <br>
     <div id="id_message">
-        <table id="id_dashboard_table">
+		<h2>Join An Existing Game</h2>
+		<table id="id_dashboard_table">
 		<tr>
 			<th>Game ID</th>  
 			<th>Game position</th>  
@@ -23,25 +24,29 @@
 			<th>Description</th>
 			<th></th>  
 		</tr>
-		{% for game_information in all_games_data %}
-			<tr>
-				<td id="id_id_of_game{{ game_information.game_id }}">{{ game_information.game_id }}</td>
-				<td id="id_position_of_game{{ game_information.game_id }}">{{ game_information.game_position }}</td>
-				<td id="id_player_on_game{{ game_information.game_id }}">{{ game_information.player_on_turn }}</td>
-				<td id="id_description_of_game{{ game_information.game_id }}">{{ game_information.description }}</td>
-				<td id="id_link_to_game{{ game_information.game_id }}"><a href="{% url 'view_game' game_information.game_id %}">Visit Game</a></td>
-			</tr>
-		{% endfor %}
-	</table>
-	<br>
-	<br>
-	<br>
-	<h2>Create New Game</h2>
-	<form method="POST" action="{% url 'new_game' %}">
-		{% csrf_token %}
-		{{ form }}
-		<input type="submit" value="Start New Game" id="id_submit_button">
-	</form>
+		{% if all_games_data %}
+			{% for game_information in all_games_data %}
+				<tr>
+					<td id="id_id_of_game{{ game_information.game_id }}">{{ game_information.game_id }}</td>
+					<td id="id_position_of_game{{ game_information.game_id }}">{{ game_information.game_position }}</td>
+					<td id="id_player_on_game{{ game_information.game_id }}">{{ game_information.player_on_turn }}</td>
+					<td id="id_description_of_game{{ game_information.game_id }}">{{ game_information.description }}</td>
+					<td id="id_link_to_game{{ game_information.game_id }}"><a href="{% url 'view_game' game_information.game_id %}">Visit Game</a></td>
+				</tr>
+			{% endfor %}
+		{% else %}
+			<p>There are currently no games.</p>
+		{% endif %}
+		</table>
+		<br>
+		<br>
+		<br>
+		<h2>Create New Game</h2>
+		<form method="POST" action="{% url 'new_game' %}">
+			{% csrf_token %}
+			{{ form }}
+			<input type="submit" value="Start New Game" id="id_submit_button">
+		</form>
     </div>
 	<script>
 		setInterval(updateGameDashboard, 500);
