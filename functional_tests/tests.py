@@ -254,10 +254,29 @@ class FunctionalTest(StaticLiveServerTestCase):
 
 	# He sees it really is his turn
         self.validate_current_player('Sacre Bleu')
-
 	# Then Sacre Bleu says to himself: "Oh, seigneur! This webpage is très bien fait! I can go rest
 	# now."
 	# Jacques is confused, because Sacre Bleu doesn't make a move. Tired of waiting he also goes
 	# to rest.
-
         self.browserJacques.quit()
+
+    def test_home_html_is_able_to_update_itself(self):
+        # The Moderator goes to the homepage of the application(he's just there)
+        the_moderators_window = webdriver.Firefox()
+        the_moderators_window.get(self.live_server_url)
+        self.assertIn('Sticker Home', the_moderators_window.title)
+	# He doesn't see any 'Rok' playin' the Sticker game...
+        self.assertNotIn('Rok', the_moderators_window.page_source)
+
+	# Rok wakes up from his power nap
+	# It is time for another good ol' game with himself
+        self.browser.get(self.live_server_url)
+        self.start_new_game('Rok', 'Rok', 'Rokovina kruh tortilja igra se igra')
+        time.sleep(0.5)
+
+        # The Moderator is still on the watch. He is eating doughnuts and sippin' coffee when suddenly
+	# Rok's name appears on screen. It appears he is playin' a game...
+        self.assertIn('Rok', the_moderators_window.page_source)
+	# The Moderator says to himself: "Another successful day of watching over the internet"
+	# Then, he goes offline.
+        the_moderators_window.quit()
