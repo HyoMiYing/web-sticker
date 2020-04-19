@@ -17,6 +17,11 @@ class FunctionalTest(StaticLiveServerTestCase):
     def tearDown(self):
         self.browser.quit()
 
+    def print_functionality(self, functionality):
+        return_of_functionality = exec(functionality)
+        dir_of_functionality = dir(return_of_functionality)
+        print(f'This is the {functionality} print statement: {return_of_functionality}. This is its dir(): {dir_of_functionality}')
+
     def validate_current_player(self, current_player):
         player_in_HTML = self.browser.find_element_by_id('id_player').text
         self.assertEqual(current_player, player_in_HTML)
@@ -195,7 +200,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         # The page submits but returns with an error
         self.assertIn('You must select at least one card', self.browser.find_element_by_class_name('errorlist').text)
 
-    def test_games_can_be_played_between_two_players_online(self):
+    def test_games_can_be_played_between_two_players_online_without_them_having_to_refresh_the_page(self):
         # Sacre Bleu finds cool new online game
         self.browser.get(self.live_server_url)
 
@@ -216,6 +221,9 @@ class FunctionalTest(StaticLiveServerTestCase):
 	# www.the-game-website.com"
 
 	# Now Sacre Bleu decides to wait. He leaves the Sticker tab to be open and goes to read Wikipedia
+        self.browser.execute_script("window.open('');")
+        self.browser.switch_to.window(self.browser.window_handles[1])
+        self.browser.get('https://en.wikipedia.org')
 
 	# After some time, Jacques reads Sacre Bleu's SMS and goes to the Sticker homepage.
         self.browserJacques = webdriver.Firefox()
@@ -239,12 +247,17 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.validate_current_player_in_foreign_browser('Sacre Bleu', self.browserJacques)
 
 	# Meanwhile Sacre Bleu is reading Wikipedia.
-	# Suddenly he notices that Sticker's browser tab title is messaging him "It is your turn" and "Jacques made a move"
-        try:
-            self.assertIn('It is your turn', self.browser.title)
-            try:
-                self.assertIn('Jacques made a move', self.browser.title)
-            except:
-                self.fail('NO \'Jacques made a move\'')
-        except:
-            self.fail('NO \'its your turn\'')
+	# Suddenly he notices that Sticker's browser tab title is messaging him "It is your turn" and "Sticker"
+        self.assertIn('Wiki', self.browser.title)
+        self.browser.switch_to.window(self.browser.window_handles[0])
+        self.assertIn('Sticker', self.browser.title)
+
+	# He sees it really is his turn
+        self.validate_current_player('Sacre Bleu')
+
+	# Then Sacre Bleu says to himself: "Oh, seigneur! This webpage is très bien fait! I can go rest
+	# now."
+	# Jacques is confused, because Sacre Bleu doesn't make a move. Tired of waiting he also goes
+	# to rest.
+
+        self.browserJacques.quit()
