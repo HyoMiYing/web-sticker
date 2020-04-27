@@ -78,15 +78,21 @@ class FunctionalTest(StaticLiveServerTestCase):
         else:
             raise AssertionError
 
-    def start_new_game(self, player1, player2, game_description):
+    def start_new_game(self, player1, player2, game_description, number_of_rounds=3):
         player1_field = self.browser.find_element_by_id('id_player1')
         player2_field = self.browser.find_element_by_id('id_player2')
         game_description_field = self.browser.find_element_by_id('id_game_description')
+        number_of_rounds_field = self.browser.find_element_by_id('id_number_of_rounds')
         submit_button = self.browser.find_element_by_id('id_submit_button')
 
         player1_field.send_keys(player1)
         player2_field.send_keys(player2)
         game_description_field.send_keys(game_description)
+        for option in number_of_rounds_field.find_elements_by_tag_name('option'):
+            if option.text == f'{number_of_rounds} rounds':
+                option.click()
+                break
+
         submit_button.click()
 
     def test_user_can_play_a_game_with_himself(self):
@@ -98,7 +104,7 @@ class FunctionalTest(StaticLiveServerTestCase):
 
         # He is invited to start a new game by providing player1 name, player2 name and a game description.
 	# Since he is playing with himself, he enters both player1 and player2 as 'Rok'. Game description in 'Just playing with myself'
-        self.start_new_game('Rok', 'Rok', 'Just playing with myself')
+        self.start_new_game('Rok', 'Rok', 'Just playing with myself', 4)
 
         # He notices there is a 'show instructions' link on the page
         show_instructions_link = self.browser.find_element_by_link_text('Show instructions')
