@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from user_web_interface.sticker_game_control import new_game, game_position, player_on_turn, remove_cards, print_all_games, get_game_information, get_all_games_data, delete_game_after_x_seconds, delete_game, create_custom_names_for_the_game, create_description_for_game
+from user_web_interface.sticker_game_control import WebStickerGameManager
 from user_web_interface.forms import GameForm, CreateNewGameForm
 import re
 
@@ -13,9 +14,12 @@ def home(request):
 def create_new_game(request):
     form = CreateNewGameForm(request.POST)
     if form.is_valid():
+        id_of_new_game = WebStickerGameManager.instantiate_new_WebStickerGame(form.cleaned_data)
+
         game_id = new_game()
         create_custom_names_for_the_game(form.cleaned_data, game_id)
         create_description_for_game(form.cleaned_data['game_description'], game_id)
+
     else:
         raise Http404('Something went wrong. Game was not created.')
     return redirect('view_game', game_id)

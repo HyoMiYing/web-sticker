@@ -5,6 +5,31 @@ sticker_game_engine = Sticker()
 dictionary_of_custom_names = {}
 dictionary_of_descriptions = {}
 
+class WebStickerGameManager(object):
+
+    def __init__(self):
+        self.dictionary_of_games = {}
+
+    def find_new_id_in_dictionary_of_games(self):
+        if self.dictionary_of_games = {}
+            return 0
+        else:
+            return max(self.dictionary_of_games.keys()) + 1
+
+    def instantiate_new_WebStickerGame(cleaned_form_data):
+        new_instance = WebStickerGame(cleaned_form_data)
+        id_of_new_instance = find_new_id_in_dictionary_of_games()
+        self.dictionary_of_games[id_of_new_instance] = new_instance
+        return id_of_new_instance
+
+class WebStickerGame(object):
+
+    def __init__(self, cleaned_form_data):
+        self.player1 = cleaned_form_data['player1']
+        self.player2 = cleaned_form_data['player2']
+        self.number_of_rounds = cleaned_form_data['number_of_rounds']
+        self.description = cleaned_form_data['game_description']
+
 def create_custom_names_for_the_game(form_data, game_id):
     dictionary_of_custom_names[game_id] = {'player1': form_data['player1'], 'player2': form_data['player2']}
 
