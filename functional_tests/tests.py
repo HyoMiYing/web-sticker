@@ -95,6 +95,29 @@ class FunctionalTest(StaticLiveServerTestCase):
 
         submit_button.click()
 
+    def assert_round_x_of_y_is_finished(self, x, y):
+        number_of_finished_rounds = f'{x}'
+        number_of_finished_rounds_in_HTML = self.find_element_by_id('id_finished_rounds').text
+        number_of_all_rounds = f'{y}'
+        number_of_all_rounds_in_HTML = self.find_element_by_id('id_all_rounds').text
+        self.assertIn(number_of_finished_rounds, number_of_finished_rounds_in_HTML)
+        self.assertIn(number_of_all_rounds, number_of_all_rounds_in_HTML)
+
+    def assert_correct_player_has_won_this_round(self, winning_player, round_number):
+        end_of_round_information = self.browser.find_element_by_id('id_end_of_round_information').text
+        self.assertIn(f'{winning_player} won round {round_number}.', end_of_round_declaration)
+
+    def play_a_round(self, player1, player2):
+	#player1 always wins
+        self.validate_current_player(player1)
+        self.remove_cards_from_row(1, 1)
+        self.validate_current_player(player2)
+        self.remove_cards_from_row(3, 2)
+        self.validate_current_player(player1)
+        self.remove_cards_from_row(5, 3)
+        self.validate_current_player(player2)
+        self.remove_cards_from_row(7, 4)
+
     def test_user_can_play_a_game_with_himself(self):
         # Kinda silly I know
 
@@ -102,9 +125,11 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.get(self.live_server_url)
         self.assertIn('Sticker', self.browser.title)
 
-        # He is invited to start a new game by providing player1 name, player2 name and a game description.
-	# Since he is playing with himself, he enters both player1 and player2 as 'Rok'. Game description in 'Just playing with myself'
-        self.start_new_game('Rok', 'Rok', 'Just playing with myself', 4)
+        # He is invited to start a new game by providing player1 name, player2 name, a game description and number of rounds.
+	# Since he is playing with himself, he enters both player1 and player2 as 'Rok'.
+	# Game description is 'Just playing with myself'. He also choses to play the least number of
+	# rounds (3)
+        self.start_new_game('Rok', 'Rok', 'Just playing with myself', 3)
 
         # He notices there is a 'show instructions' link on the page
         show_instructions_link = self.browser.find_element_by_link_text('Show instructions')
@@ -114,34 +139,27 @@ class FunctionalTest(StaticLiveServerTestCase):
         game_rules = self.browser.find_element_by_id('id_game_rules').text
         self.assertIn('The player who picks up the last card, loses.', game_rules)
 
-        # He selects the card in the top row (It is the only card there)
-        self.validate_current_player('Rok')
-        self.remove_cards_from_row(1, 1)
+	# He plays a round
+        self.play_a_round('Rok', 'Rok')
 
-        # After the page refreshes, Rok can see it says it's 'Rok's turn now, and the 0_0 card is gone
-        self.validate_current_player('Rok')
+        # The round 1 of 3 is over. Winner is Rok (because Rok picked up the last card)
+        self.assert_correct_player_has_won_this_round('Rok', 1)
+        self.assert_round_x_of_y_is_finished(1, 3)
 
-        # Now Rok removes all cards from the last row
-        self.remove_cards_from_row(2, 4)
+	# He plays another round
+        self.play_a_round('Rok', 'Rok')
 
-        # Then, again there is Rok's turn and he removes 2 cards from 2nd row
-        self.validate_current_player('Rok')
-        self.remove_cards_from_row(2, 2)
+        # The round 2 of 3 is over. Winner is Rok (because Rok picked up the last card)
+        self.assert_correct_player_has_won_this_round('Rok', 2)
+        self.assert_round_x_of_y_is_finished(2, 3)
 
-        # Rok then removes all cards in the 3rd row
-        self.validate_current_player('Rok')
-        self.remove_cards_from_row(5, 3)
+	# He plays the last round
+        self.play_a_round('Rok', 'Rok')
 
-        # Now there's Rok's turn and he removes all the cards left in the 4th row
-        self.validate_current_player('Rok')
-        self.remove_cards_from_row(5, 4)
+        # The round 3 of 3 is over. Now the winner of the whole game is Rok.
+	# That is because Rok had won 3 games and Rok had won 0 games.
+        self.assertIn('Rok, you won the game!', self.browser.find_element_by_tag_name('body').text)
 
-        # Now, Rok has only one option - to remove the last card from the board, which was in the 2nd row
-        self.validate_current_player('Rok')
-        self.remove_cards_from_row(1, 2)
-
-        # The game is over. Winner is Rok (because Rok picked up the last card)
-        self.assertIn('Rok, you won!', self.browser.find_element_by_tag_name('body').text)
         # And there is also a link to another game
         self.browser.find_element_by_link_text('Play New Game')
 
@@ -151,7 +169,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.get(self.live_server_url)
 
         # He starts new game
-        self.start_new_game('Rok', 'Rok', 'Še en dan, še ena igra')
+        self.start_new_game('Rok', 'Rok', 'Še en dan, še ena igra', 3)
         self.validate_current_player('Rok')
         self.remove_cards_from_row(3, 2)
         cards_in_second_row = self.browser.find_elements_by_css_selector('label[for^="id_row1card"]')
@@ -170,12 +188,12 @@ class FunctionalTest(StaticLiveServerTestCase):
         # Dino visits the home page.
         self.browser.get(self.live_server_url)
 	# He starts his own game.
-        self.start_new_game('Dino', 'Dean', 'Đe si brate! Daj, ajmo!')
+        self.start_new_game('Dino', 'Dean', 'Đe si brate! Daj, ajmo!', 11)
         # There is no sign of Rok's moves!
         cards_in_second_row = self.browser.find_elements_by_css_selector('label[for^="id_row1card"]')
         self.assertEquals(len(cards_in_second_row), 3, f'There are {cards_in_second_row} cards in second row. There should be only 3')
 
-        # Dino plays his own game
+        # Dino is playing his own game
         self.validate_current_player('Dino')
         self.remove_cards_from_row(1, 1)
 
@@ -196,7 +214,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.get(self.live_server_url)
 
 	# He creates new game
-        self.start_new_game('The Bamboozler', 'The Bamboozler', 'Here i go bamboozlin\' again!')
+        self.start_new_game('The Bamboozler', 'The Bamboozler', 'Here i go bamboozlin\' again!', 5)
 
         # He sees a new game form, full of cards. The Bamboozler
         # decides to submit an empty form.
@@ -206,12 +224,14 @@ class FunctionalTest(StaticLiveServerTestCase):
         # The page submits but returns with an error
         self.assertIn('You must select at least one card', self.browser.find_element_by_class_name('errorlist').text)
 
+	# Surprised, that his bamboozlin' plan didn't work out, he decides to turn off the computer
+	# untill he gets a new bamboozle idea
     def test_games_can_be_played_between_two_players_online_without_them_having_to_refresh_the_page(self):
         # Sacre Bleu finds cool new online game
         self.browser.get(self.live_server_url)
 
         # He sees it is a 2 player game. He decides he will play the game with his friend, Jacques.
-        self.start_new_game('Sacre Bleu', 'Jacques', 'Bonjour Jacques, join this game!')
+        self.start_new_game('Sacre Bleu', 'Jacques', 'Bonjour Jacques, join this game!', 5)
 
         # Now Sacre Bleu makes a move
         self.validate_current_player('Sacre Bleu')
