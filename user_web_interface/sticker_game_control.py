@@ -11,14 +11,14 @@ class WebStickerGameManager(object):
         self.dictionary_of_games = {}
 
     def find_new_id_in_dictionary_of_games(self):
-        if self.dictionary_of_games = {}
+        if self.dictionary_of_games == {}:
             return 0
         else:
             return max(self.dictionary_of_games.keys()) + 1
 
-    def instantiate_new_WebStickerGame(cleaned_form_data):
+    def instantiate_new_WebStickerGame(self, cleaned_form_data):
         new_instance = WebStickerGame(cleaned_form_data)
-        id_of_new_instance = find_new_id_in_dictionary_of_games()
+        id_of_new_instance = self.find_new_id_in_dictionary_of_games()
         self.dictionary_of_games[id_of_new_instance] = new_instance
         return id_of_new_instance
 

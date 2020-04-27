@@ -8,13 +8,15 @@ from user_web_interface.sticker_game_control import WebStickerGameManager
 from user_web_interface.forms import GameForm, CreateNewGameForm
 import re
 
+game_manager = WebStickerGameManager()
+
 def home(request):
     return render(request, 'home.html', {'all_games_data': get_all_games_data(), 'form': CreateNewGameForm()})
 
 def create_new_game(request):
     form = CreateNewGameForm(request.POST)
     if form.is_valid():
-        id_of_new_game = WebStickerGameManager.instantiate_new_WebStickerGame(form.cleaned_data)
+        id_of_new_game = game_manager.instantiate_new_WebStickerGame(form.cleaned_data)
 
         game_id = new_game()
         create_custom_names_for_the_game(form.cleaned_data, game_id)
