@@ -17,49 +17,59 @@ def create_new_game(request):
     form = CreateNewGameForm(request.POST)
     if form.is_valid():
         id_of_new_game = game_manager.instantiate_new_WebStickerGame(form.cleaned_data)
-
-        game_id = new_game()
-        create_custom_names_for_the_game(form.cleaned_data, game_id)
-        create_description_for_game(form.cleaned_data['game_description'], game_id)
-
     else:
         raise Http404('Something went wrong. Game was not created.')
-    return redirect('view_game', game_id)
+    return redirect('view_round', game_id)
 
 def make_a_move(request, game_id):
-    game_information = get_game_information(game_id)
-    if not game_information:
+    round_information = game_manager.get_round_information(game_id)
+    if not round_information:
         raise Http404("Game does not exist anymore")
-    form = GameForm(game_information['position'], request.POST)
+    form = GameForm(round_information['position'], request.POST)
     if form.is_valid():
-         removal_message = remove_cards(list(request.POST), game_id)
+         removal_message = game_manager.remove_cards(list(request.POST), game_id)
          if re.search('Game over', removal_message):
-             return HttpResponseRedirect(reverse('end_game', args=(game_id,)))
+             return HttpResponseRedirect(reverse('end_round', args=(game_id,)))
          else:
-             return HttpResponseRedirect(reverse('view_game', args=(game_id,)))
+             return HttpResponseRedirect(reverse('view_round', args=(game_id,)))
     else:
-        return render(request, 'home.html', {'form':form, 'current_player':game_information['player'], 'game_id':game_id})
+        return render(request, 'home.html', {'form':form, 'current_player':round_information['player'], 'game_id':game_id})
     
-def view_game(request, game_id):
-    game_information = get_game_information(game_id)
-    # In case the game ended
-    if game_information == False:
-        return redirect('end_game', game_id)
-    elif game_information['position'] == [0, 0, 0, 0]:
-        return redirect('end_game', game_id)
-    form = GameForm(game_information['position'])
-    return render(request, 'game.html', {'form':form, 'current_player':game_information['player'], 'game_id':game_id})
+def view_round(request, game_id):
+    round_information = game_manager.get_round_information(game_id)
+    # In case the round ended
+    if round_information == False:
+        return redirect('end_round', game_id)
+    elif round_information['position'] == [0, 0, 0, 0]:
+        return redirect('end_round', game_id)
+    form = GameForm(round_information['position'])
+    return render(request, 'game.html', {'form':form, 'current_player':round_information['player'], 'game_id':game_id})
 
-def end_game(request, game_id):
-    player = player_on_turn(game_id)
-    if player == False:
-        return redirect('home')
-    # delete_game(game_id)
-    # delete_game_after_x_seconds(game_id, 120)
-    return render(request, 'end.html', {'player' : player})
+def end_round(request, game_id):
+    game_status = game_manager.get_game_status(game_id)
+    if game_status['Round ended']:
+        round_winner = game_status['round_winner']
+        number_of_played_rounds = game_status['number_of_played_rounds']
+        number_of_all_rounds = game_status['number_of_all_rounds']
+        return render(request, 'end_round.html', {'round_winner': round_winner, 'number_of_played_rounds': number_of_played_rounds, 'number_of_all_rounds': number_of_all_rounds})
+    elif game_status['Game ended']:
+        game_winner = game_status['game_winner']
+        number_of_played_rounds = game_status['number_of_played_rounds']
+        if game_status['player1_wins']: 
+            player1_wins = game_status['player1_wins']
+        if number_of_rounds_won_by_player1 = 
+        number_of_rounds_won_by_player2 = 
 
-def admin_page(request):
-    return render(request, 'admin.html', {'all_games_data': get_all_games_data()})
+#def end_game(request, game_id):
+#    player = game_manager.player_on_turn(game_id)
+#    if player == False:
+#        return redirect('home')
+#    # delete_game(game_id)
+#    # delete_game_after_x_seconds(game_id, 120)
+#    return render(request, 'end.html', {'player' : player})
+
+#def admin_page(request):
+#    return render(request, 'admin.html', {'all_games_data': get_all_games_data()})
 
 def handler404(request):
     return render(request, '404.html', status=404)

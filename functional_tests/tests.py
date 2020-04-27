@@ -118,6 +118,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.validate_current_player(player2)
         self.remove_cards_from_row(7, 4)
 
+    @unittest.skip
     def test_user_can_play_a_game_with_himself(self):
         # Kinda silly I know
 
