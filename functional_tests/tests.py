@@ -97,15 +97,15 @@ class FunctionalTest(StaticLiveServerTestCase):
 
     def assert_round_x_of_y_is_finished(self, x, y):
         number_of_finished_rounds = f'{x}'
-        number_of_finished_rounds_in_HTML = self.find_element_by_id('id_finished_rounds').text
+        number_of_finished_rounds_in_HTML = self.browser.find_element_by_id('id_finished_rounds').text
         number_of_all_rounds = f'{y}'
-        number_of_all_rounds_in_HTML = self.find_element_by_id('id_all_rounds').text
+        number_of_all_rounds_in_HTML = self.browser.find_element_by_id('id_all_rounds').text
         self.assertIn(number_of_finished_rounds, number_of_finished_rounds_in_HTML)
         self.assertIn(number_of_all_rounds, number_of_all_rounds_in_HTML)
 
     def assert_correct_player_has_won_this_round(self, winning_player, round_number):
-        end_of_round_information = self.browser.find_element_by_id('id_end_of_round_information').text
-        self.assertIn(f'{winning_player} won round {round_number}.', end_of_round_declaration)
+        end_of_round_declaration = self.browser.find_element_by_id('id_end_of_round_information').text
+        self.assertIn(f'{winning_player} won round {round_number}', end_of_round_declaration)
 
     def play_a_round(self, player1, player2):
 	#player1 always wins
@@ -118,7 +118,6 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.validate_current_player(player2)
         self.remove_cards_from_row(7, 4)
 
-    @unittest.skip
     def test_user_can_play_a_game_with_himself(self):
         # Kinda silly I know
 
@@ -147,12 +146,21 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.assert_correct_player_has_won_this_round('Rok', 1)
         self.assert_round_x_of_y_is_finished(1, 3)
 
+	# He pesses continue link to proceed to another round
+        continue_link = self.browser.find_element_by_link_text('Continue') 
+        continue_link.click()
+        time.sleep(1.5)
+
 	# He plays another round
         self.play_a_round('Rok', 'Rok')
 
         # The round 2 of 3 is over. Winner is Rok (because Rok picked up the last card)
         self.assert_correct_player_has_won_this_round('Rok', 2)
         self.assert_round_x_of_y_is_finished(2, 3)
+
+        continue_link = self.browser.find_element_by_link_text('Continue') 
+        continue_link.click()
+        time.sleep(1.5)
 
 	# He plays the last round
         self.play_a_round('Rok', 'Rok')

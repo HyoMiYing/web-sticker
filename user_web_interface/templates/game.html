@@ -77,7 +77,7 @@
 		$.ajax({
 			synch: 'true',
 			type: 'GET',
-			url: '{% url 'view_game' game_id %}',
+			url: '{% url 'view_round' game_id %}',
 			dataType: 'html',
 			success: function(data){
 				if (data.indexOf("ajax") == -1) {

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Round Over{% endblock %}
+
+{% block page_head %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'end.css' %}">
+{% endblock %}
+
+{% block body %}
+    <br>
+    <br>
+    <br>
+    <div id="id_message">
+        <h1 id="id_end_of_round_information">{{ round_winner }} won round <strong id="id_finished_rounds">{{ number_of_played_rounds }}</strong>/<strong id="id_all_rounds">{{ number_of_all_rounds }}</strong> </h1>
+        <a href="{% url 'view_round' game_id %}">Continue</a>
+    </div>
+{% endblock %}

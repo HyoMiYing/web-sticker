@@ -3,7 +3,6 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
-from user_web_interface.sticker_game_control import new_game, game_position, player_on_turn, remove_cards, print_all_games, get_game_information, get_all_games_data, delete_game_after_x_seconds, delete_game, create_custom_names_for_the_game, create_description_for_game
 from user_web_interface.sticker_game_control import WebStickerGameManager
 from user_web_interface.forms import GameForm, CreateNewGameForm
 import re
@@ -11,12 +10,12 @@ import re
 game_manager = WebStickerGameManager()
 
 def home(request):
-    return render(request, 'home.html', {'all_games_data': get_all_games_data(), 'form': CreateNewGameForm()})
+    return render(request, 'home.html', {'form': CreateNewGameForm()})
 
 def create_new_game(request):
     form = CreateNewGameForm(request.POST)
     if form.is_valid():
-        id_of_new_game = game_manager.instantiate_new_WebStickerGame(form.cleaned_data)
+        game_id = game_manager.instantiate_new_WebStickerGame(form.cleaned_data)
     else:
         raise Http404('Something went wrong. Game was not created.')
     return redirect('view_round', game_id)
@@ -47,13 +46,10 @@ def view_round(request, game_id):
 
 def end_round(request, game_id):
     game_status = game_manager.get_game_status(game_id)
-    if game_status['Round ended']:
-        round_winner = game_status['round_winner']
-        number_of_played_rounds = game_status['number_of_played_rounds']
-        number_of_all_rounds = game_status['number_of_all_rounds']
-        return render(request, 'end_round.html', {'round_winner': round_winner, 'number_of_played_rounds': number_of_played_rounds, 'number_of_all_rounds': number_of_all_rounds})
-    elif game_status['Game ended']:
-        return HttpResponseRedirect(reverse('end_game', args=(game_id,)))
+    round_winner = game_manager.get_winner(game_id)
+    number_of_played_rounds = game_status['number_of_played_rounds']
+    number_of_all_rounds = game_status['number_of_all_rounds']
+    return render(request, 'end_round.html', {'round_winner': round_winner, 'number_of_played_rounds': number_of_played_rounds, 'number_of_all_rounds': number_of_all_rounds, 'game_id': game_id})
 
 #        game_winner = game_status['game_winner']
 #        number_of_played_rounds = game_status['number_of_played_rounds']

@@ -1,5 +1,6 @@
 from sticker import Sticker, Igra
 from threading import Timer
+import re
 
 sticker_game_engine = Sticker()
 dictionary_of_custom_names = {}
@@ -22,85 +23,93 @@ class WebStickerGameManager(object):
         self.dictionary_of_games[id_of_new_instance] = new_instance
         return id_of_new_instance
 
+    def get_winner(self, game_id):
+        correct_game = self.dictionary_of_games[game_id]
+        winner = correct_game.last_winner
+        return winner
+
+    def get_player_name(self, player_number, game_id):
+        correct_game = self.dictionary_of_games[game_id]
+        if player_number == 1:
+            player_name = correct_game.player1
+        elif player_number == 2:
+            player_name = correct_game.player2
+        return player_name
+
+    def get_game_status(self, game_id):
+# Returns 'number_of_played_rounds', 'number_of_all_rounds'
+# if game is ended
+# returns 'Game ended', 'winner' or None (if it's a tie), 'number_of_played_rounds', 'player1_wins', 'player2_wins'
+#                       
+#                         
+        correct_game = self.dictionary_of_games[game_id]
+        number_of_played_rounds = correct_game.current_round - 1
+        number_of_all_rounds = correct_game.number_of_rounds
+        return {'number_of_played_rounds': number_of_played_rounds, 'number_of_all_rounds': number_of_all_rounds}
+
+    def get_round_information(self, game_id):
+        correct_game = self.dictionary_of_games[game_id]
+        round_information = correct_game.get_round_information()
+        return round_information
+
+    def remove_cards(self, post_data, game_id):
+        correct_game = self.dictionary_of_games[game_id]
+        removal_message = correct_game.remove_cards(post_data)
+        return removal_message
+
 class WebStickerGame(object):
 
     def __init__(self, cleaned_form_data):
         self.player1 = cleaned_form_data['player1']
         self.player2 = cleaned_form_data['player2']
-        self.number_of_rounds = cleaned_form_data['number_of_rounds']
+        self.number_of_rounds = int(cleaned_form_data['number_of_rounds'])
         self.description = cleaned_form_data['game_description']
+        self.current_round = 1
+        self.lukas_sticker = Sticker()
+        [self.lukas_sticker.new_game() for round in range(self.number_of_rounds)]
+        self.last_winner = None
 
-def create_custom_names_for_the_game(form_data, game_id):
-    dictionary_of_custom_names[game_id] = {'player1': form_data['player1'], 'player2': form_data['player2']}
+    def get_round_information(self):
+        # Go to Igra class and read player and position values
+        print('------------------------------------------------')
+        print(f'This is Current Round: {self.current_round}.')
+        [print(f'This is game {dict_key} and this is its position: {self.lukas_sticker.igre[dict_key].position}') for dict_key in self.lukas_sticker.igre.keys()]
+        current_game = self.lukas_sticker.igre[self.current_round-1]
+        current_games_position = current_game.position
+        print(f'Game {current_game} is selected. Its position is {current_games_position}.')
+        if current_games_position == [0, 0, 0, 0]:
+            return False
+        current_player = current_game.player
+        if current_player == 'player1':
+            current_player_name = self.player1
+        if current_player == 'player2':
+            current_player_name = self.player2
+        return {'player': current_player_name, 'position': current_games_position}
 
-def create_description_for_game(description, game_id):
-    dictionary_of_descriptions[game_id] = description
+    def clean_POST_data(self, data):
+        csrf_token = data.pop(0)
+        row_number_in_first_card = int(list(data[0])[3]) + 1
+        for card in data:
+            if (int(list(card)[3]) + 1) == row_number_in_first_card:
+                row_number = row_number_in_first_card
+            else:
+                row_number = False
+        number_of_cards = len(data)
+        return {'row_number': row_number, 'number_of_cards': number_of_cards}
+        
+    def remove_cards(self, post_data):
+        cleaned_POST_data = self.clean_POST_data(post_data)
+        current_game = self.lukas_sticker.igre[self.current_round-1]
+        move_message = current_game.move(cleaned_POST_data['row_number'], cleaned_POST_data['number_of_cards'])
+        if re.search('Game over', move_message):
+            player_number = list(move_message)[-1]
+            self.set_last_winner(player_number)
+            self.current_round += 1
+        return move_message
 
-def print_all_games():
-    dictonary_of_games = sticker_game_engine.igre
-    return dictonary_of_games
+    def set_last_winner(self, player_number):
+        if player_number == '1':
+            self.last_winner = self.player1
+        if player_number == '2':
+            self.last_winner = self.player2
 
-def new_game():
-    game_id = sticker_game_engine.new_game([1, 3, 5, 7])
-    return game_id
-    
-def game_position(game_id):
-    dictionary_of_all_game_instances = sticker_game_engine.igre
-    try:
-        current_game_instance = dictionary_of_all_game_instances[game_id]
-    except KeyError:
-        return False
-    return current_game_instance.position
-
-def player_on_turn(game_id):
-    try:
-        game_instance = sticker_game_engine.igre[game_id]
-    except KeyError:
-        return False
-    current_player = game_instance.player
-    current_player_name = dictionary_of_custom_names[game_id][current_player]
-    return current_player_name
-
-def clean_POST_data(data):
-    csrf_token = data.pop(0)
-    row_number_in_first_card = int(list(data[0])[3]) + 1
-    for card in data:
-        if (int(list(card)[3]) + 1) == row_number_in_first_card:
-            row_number = row_number_in_first_card
-        else:
-            row_number = False
-    number_of_cards = len(data)
-    return {'row_number': row_number, 'number_of_cards': number_of_cards}
-
-def remove_cards(data, game_id):
-    cleaned_POST_data = clean_POST_data(data)
-    game_instance = sticker_game_engine.igre[game_id]
-    move_function = game_instance.move(cleaned_POST_data['row_number'], cleaned_POST_data['number_of_cards'])
-    return move_function
-
-def delete_game(game_id):
-    if sticker_game_engine.remove_id(game_id):
-        return 'Game instance deleted'
-    else:
-        return 'ERROR, not deleted'
-
-def delete_game_after_x_seconds(game_id, time_in_seconds):
-    new_thread = Timer(time_in_seconds, delete_game(game_id))
-    new_thread.start()
-
-def get_game_information(game_id):
-    position = game_position(game_id)
-    if not position:
-        return False
-    player = player_on_turn(game_id)
-    return {'position': position, 'player': player}
-
-def delete_game(game_id):
-    sticker_game_engine.remove_id(game_id)
-
-def get_all_games_data():
-    all_games_data = []
-    for game in sticker_game_engine.igre:
-        information_dictionary = {'game_id': game, 'game_position': game_position(game), 'player_on_turn': player_on_turn(game), 'description': dictionary_of_descriptions[game]}
-        all_games_data.append(information_dictionary)
-    return all_games_data
