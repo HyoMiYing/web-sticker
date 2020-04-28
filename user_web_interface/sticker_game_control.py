@@ -2,9 +2,6 @@ from sticker import Sticker, Igra
 from threading import Timer
 import re
 
-sticker_game_engine = Sticker()
-dictionary_of_custom_names = {}
-dictionary_of_descriptions = {}
 
 class WebStickerGameManager(object):
 
@@ -60,6 +57,7 @@ class WebStickerGameManager(object):
 class WebStickerGame(object):
 
     def __init__(self, cleaned_form_data):
+        print('Initializing WebStickerGame object.....')
         self.player1 = cleaned_form_data['player1']
         self.player2 = cleaned_form_data['player2']
         self.number_of_rounds = int(cleaned_form_data['number_of_rounds'])
@@ -68,15 +66,13 @@ class WebStickerGame(object):
         self.lukas_sticker = Sticker()
         [self.lukas_sticker.new_game() for round in range(self.number_of_rounds)]
         self.last_winner = None
+        print('End of initializing WebStickerGame object.....')
+
 
     def get_round_information(self):
         # Go to Igra class and read player and position values
-        print('------------------------------------------------')
-        print(f'This is Current Round: {self.current_round}.')
-        [print(f'This is game {dict_key} and this is its position: {self.lukas_sticker.igre[dict_key].position}') for dict_key in self.lukas_sticker.igre.keys()]
         current_game = self.lukas_sticker.igre[self.current_round-1]
         current_games_position = current_game.position
-        print(f'Game {current_game} is selected. Its position is {current_games_position}.')
         if current_games_position == [0, 0, 0, 0]:
             return False
         current_player = current_game.player
@@ -100,7 +96,19 @@ class WebStickerGame(object):
     def remove_cards(self, post_data):
         cleaned_POST_data = self.clean_POST_data(post_data)
         current_game = self.lukas_sticker.igre[self.current_round-1]
+        print('---------------------------BEFORE-------------------------')
+        print('|----------------------------------------|')
+        print('|----------------------------------------|')
+        print('|----------------------------------------|')
+        [print(f'This is game {dict_key} and this is its position: {self.lukas_sticker.igre[dict_key].position}. This is its class mark: {self.lukas_sticker.igre[dict_key]}') for dict_key in self.lukas_sticker.igre.keys()]
+        print(f'I will execute a move command on igra {current_game} with data {cleaned_POST_data}.')
         move_message = current_game.move(cleaned_POST_data['row_number'], cleaned_POST_data['number_of_cards'])
+        print('|----------------------------------------|')
+        print('|----------------------------------------|')
+        print('|----------------------------------------|')
+        print('---------------------------AFTER---------------------------')
+        print(f'This was the move_message: {move_message}.')
+        [print(f'This is game {dict_key} and this is its position: {self.lukas_sticker.igre[dict_key].position}. This is its class mark: {self.lukas_sticker.igre[dict_key]}') for dict_key in self.lukas_sticker.igre.keys()]
         if re.search('Game over', move_message):
             player_number = list(move_message)[-1]
             self.set_last_winner(player_number)
