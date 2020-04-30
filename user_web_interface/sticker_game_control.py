@@ -59,7 +59,6 @@ class WebStickerGameManager(object):
 class WebStickerGame(object):
 
     def __init__(self, cleaned_form_data):
-        print('Initializing WebStickerGame object.....')
         self.player1 = cleaned_form_data['player1']
         self.player2 = cleaned_form_data['player2']
         self.number_of_rounds = int(cleaned_form_data['number_of_rounds'])
@@ -68,7 +67,6 @@ class WebStickerGame(object):
         self.lukas_sticker = Sticker()
         [self.lukas_sticker.new_game() for round in range(self.number_of_rounds)]
         self.last_winner = None
-        print('End of initializing WebStickerGame object.....')
 
 
     def get_round_information(self):

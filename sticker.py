@@ -5,7 +5,7 @@
 class Igra:
     def __init__(self, position = None):
         if not position:
-            position = [1, 2, 3, 4]
+            position = [1, 3, 5, 7]
         self.position = position
         self.player = 'player1'
     
