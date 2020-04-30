@@ -46,18 +46,12 @@ def view_round(request, game_id):
 
 def end_round(request, game_id):
     game_status = game_manager.get_game_status(game_id)
+    if 'Game over' in game_status:
+        return HttpResponseRedirect(reverse('end_game', args=(game_id,)))
     round_winner = game_manager.get_winner(game_id)
     number_of_played_rounds = game_status['number_of_played_rounds']
     number_of_all_rounds = game_status['number_of_all_rounds']
     return render(request, 'end_round.html', {'round_winner': round_winner, 'number_of_played_rounds': number_of_played_rounds, 'number_of_all_rounds': number_of_all_rounds, 'game_id': game_id})
-
-#        game_winner = game_status['game_winner']
-#        number_of_played_rounds = game_status['number_of_played_rounds']
-#        if game_status['player1_wins']: 
-#            player1_wins = game_status['player1_wins']
-#        if game_status['player2_wins']: 
-#            player2_wins = game_status['player2_wins']
-#        return render(request, 'end')
 
 def end_game(request, game_id):
     game_status = game_manager.get_game_status(game_id)
@@ -71,15 +65,9 @@ def end_game(request, game_id):
             player1_wins = game_status['player1_wins']
         if game_status['player2_wins']: 
             player2_wins = game_status['player2_wins']
-        return render(request, 'end.html', {'winner': game_winner, 'tie': tie, 'number_of_played_rounds': number_of_played_rounds, 'player1_wins': player1_wins, 'player1': player1 ,'player2_wins': player2_wins, 'player2': player2})
     else:
         return HttpResponseRedirect(reverse('view_round', args=(game_id,)))
-#    player = game_manager.player_on_turn(game_id)
-#    if player == False:
-#        return redirect('home')
-#    # delete_game(game_id)
-#    # delete_game_after_x_seconds(game_id, 120)
-    return render(request, 'end.html', {'player' : player})
+    return render(request, 'end.html', {'winner': game_winner, 'tie': tie, 'number_of_played_rounds': number_of_played_rounds, 'player1_wins': player1_wins, 'player1': player1 ,'player2_wins': player2_wins, 'player2': player2})
 
 #def admin_page(request):
 #    return render(request, 'admin.html', {'all_games_data': get_all_games_data()})

@@ -36,14 +36,19 @@ class WebStickerGameManager(object):
         return player_name
 
     def get_game_status(self, game_id):
-# Returns 'number_of_played_rounds', 'number_of_all_rounds'
-# if game is ended
-# returns 'Game ended', 'winner' or None (if it's a tie), 'number_of_played_rounds', 'player1_wins', 'player2_wins'
-#                       
-#                         
         correct_game = self.dictionary_of_games[game_id]
         number_of_played_rounds = correct_game.current_round - 1
         number_of_all_rounds = correct_game.number_of_rounds
+        if number_of_played_rounds == number_of_all_rounds:
+            if correct_game.player1_wins == correct_game.player2_wins:
+                winner = False
+            elif correct_game.player1_wins > correct_game.player2_wins:
+                winner = correct_game.player1
+            elif correct_game.player2_wins > correct_game.player1_wins:
+                winner = correct_game.player2
+            else:
+                raise Exception('Wrong player win value.')            
+            return {'Game ended': True, 'number_of_all_rounds': number_of_played_rounds, 'winner': winner, 'player1_wins': correct_game.player1_wins, 'player2_wins': correct_game.player2_wins}
         return {'number_of_played_rounds': number_of_played_rounds, 'number_of_all_rounds': number_of_all_rounds}
 
     def get_round_information(self, game_id):
@@ -67,7 +72,8 @@ class WebStickerGame(object):
         self.lukas_sticker = Sticker()
         [self.lukas_sticker.new_game() for round in range(self.number_of_rounds)]
         self.last_winner = None
-
+        self.player1_wins = 0
+        self.player2_wins = 0
 
     def get_round_information(self):
         # Go to Igra class and read player and position values
@@ -98,13 +104,7 @@ class WebStickerGame(object):
     def remove_cards(self, post_data):
         cleaned_POST_data = self.clean_POST_data(post_data)
         current_game = self.lukas_sticker.igre[self.current_round-1]
-        print('---------------------------BEFORE-------------------------')
-        [print(f'This is game {dict_key} and this is its position: {self.lukas_sticker.igre[dict_key].position}. This is its class mark: {self.lukas_sticker.igre[dict_key]}') for dict_key in self.lukas_sticker.igre.keys()]
-        print(f'I will execute a move command on igra {current_game} with data {cleaned_POST_data}.')
         move_message = current_game.move(cleaned_POST_data['row_number'], cleaned_POST_data['number_of_cards'])
-        print('---------------------------AFTER---------------------------')
-        print(f'This was the move_message: {move_message}.')
-        [print(f'This is game {dict_key} and this is its position: {self.lukas_sticker.igre[dict_key].position}. This is its class mark: {self.lukas_sticker.igre[dict_key]}') for dict_key in self.lukas_sticker.igre.keys()]
         if re.search('Game over', move_message):
             player_number = list(move_message)[-1]
             self.set_last_winner(player_number)
@@ -114,7 +114,9 @@ class WebStickerGame(object):
     def set_last_winner(self, player_number):
         if player_number == '1':
             self.last_winner = self.player1
+            self.player1_wins + 1
         elif player_number == '2':
             self.last_winner = self.player2
+            self.player2_wins + 1
         else:
             raise Exception('Player number should be 1 or 2.')
