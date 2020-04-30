@@ -55,19 +55,19 @@ def end_round(request, game_id):
 
 def end_game(request, game_id):
     game_status = game_manager.get_game_status(game_id)
-    if game_status['Game ended']:
-        if game_status['winner']:
-            winner = game_status['winner']
+    if game_status['Game over']:
+        if 'winner' in game_status:
+            context = {'winner': game_status['winner']}
         else:
-            tie = 'It\'s a tie!'
-        number_of_played_rounds = game_status['number_of_played_rounds']
+            context = {'tie': 'It\'s a tie!'}
+        context['number_of_played_rounds'] = game_status['number_of_played_rounds']
         if game_status['player1_wins']: 
-            player1_wins = game_status['player1_wins']
+            context['player1_wins'] = game_status['player1_wins']
         if game_status['player2_wins']: 
-            player2_wins = game_status['player2_wins']
+            context['player2_wins'] = game_status['player2_wins']
     else:
         return HttpResponseRedirect(reverse('view_round', args=(game_id,)))
-    return render(request, 'end.html', {'winner': game_winner, 'tie': tie, 'number_of_played_rounds': number_of_played_rounds, 'player1_wins': player1_wins, 'player1': player1 ,'player2_wins': player2_wins, 'player2': player2})
+    return render(request, 'end.html', context)
 
 #def admin_page(request):
 #    return render(request, 'admin.html', {'all_games_data': get_all_games_data()})

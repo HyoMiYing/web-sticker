@@ -41,14 +41,15 @@ class WebStickerGameManager(object):
         number_of_all_rounds = correct_game.number_of_rounds
         if number_of_played_rounds == number_of_all_rounds:
             if correct_game.player1_wins == correct_game.player2_wins:
-                winner = False
+                game_status_dictionary = {'tie': True}
             elif correct_game.player1_wins > correct_game.player2_wins:
-                winner = correct_game.player1
+                game_status_dictionary = {'winner': correct_game.player1}
             elif correct_game.player2_wins > correct_game.player1_wins:
-                winner = correct_game.player2
+                game_status_dictionary = {'winner': correct_game.player1}
             else:
                 raise Exception('Wrong player win value.')            
-            return {'Game ended': True, 'number_of_all_rounds': number_of_played_rounds, 'winner': winner, 'player1_wins': correct_game.player1_wins, 'player2_wins': correct_game.player2_wins}
+            game_status_dictionary.update({'Game over': True, 'number_of_played_rounds': number_of_played_rounds, 'player1_wins': correct_game.player1_wins, 'player2_wins': correct_game.player2_wins}) 
+            return game_status_dictionary
         return {'number_of_played_rounds': number_of_played_rounds, 'number_of_all_rounds': number_of_all_rounds}
 
     def get_round_information(self, game_id):
@@ -114,9 +115,9 @@ class WebStickerGame(object):
     def set_last_winner(self, player_number):
         if player_number == '1':
             self.last_winner = self.player1
-            self.player1_wins + 1
+            self.player1_wins += 1
         elif player_number == '2':
             self.last_winner = self.player2
-            self.player2_wins + 1
+            self.player2_wins += 1
         else:
             raise Exception('Player number should be 1 or 2.')

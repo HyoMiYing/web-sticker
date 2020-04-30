@@ -5,6 +5,7 @@ import time
 import unittest
 import os
 
+@unittest.skip
 class FunctionalTest(unittest.TestCase):
 
     def setUp(self):

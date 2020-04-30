@@ -13,7 +13,12 @@
     <br>
     <div id="id_message">
         <h1>Game Over</h1>
-        <p><strong>{{ player }}, you won!</strong></p>
+{% if winner %}
+        <p><strong>{{ winner }}, you won the game!</strong></p>
+{% endif %}
+{% if tie %}
+        <p><strong>{{ tie }}</strong></p>
+{% endif %}
         <a href="/">Play New Game</a>
     </div>
 {% endblock %}
