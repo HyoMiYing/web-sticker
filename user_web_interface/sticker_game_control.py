@@ -31,6 +31,8 @@ class WebStickerGameManager(object):
             player_name = correct_game.player1
         elif player_number == 2:
             player_name = correct_game.player2
+        else:
+            raise Exception('Player number should be either 1 or 2.')
         return player_name
 
     def get_game_status(self, game_id):
@@ -78,8 +80,10 @@ class WebStickerGame(object):
         current_player = current_game.player
         if current_player == 'player1':
             current_player_name = self.player1
-        if current_player == 'player2':
+        elif current_player == 'player2':
             current_player_name = self.player2
+        else:
+            raise Exception('Current player should be either player1 or player2')
         return {'player': current_player_name, 'position': current_games_position}
 
     def clean_POST_data(self, data):
@@ -97,15 +101,9 @@ class WebStickerGame(object):
         cleaned_POST_data = self.clean_POST_data(post_data)
         current_game = self.lukas_sticker.igre[self.current_round-1]
         print('---------------------------BEFORE-------------------------')
-        print('|----------------------------------------|')
-        print('|----------------------------------------|')
-        print('|----------------------------------------|')
         [print(f'This is game {dict_key} and this is its position: {self.lukas_sticker.igre[dict_key].position}. This is its class mark: {self.lukas_sticker.igre[dict_key]}') for dict_key in self.lukas_sticker.igre.keys()]
         print(f'I will execute a move command on igra {current_game} with data {cleaned_POST_data}.')
         move_message = current_game.move(cleaned_POST_data['row_number'], cleaned_POST_data['number_of_cards'])
-        print('|----------------------------------------|')
-        print('|----------------------------------------|')
-        print('|----------------------------------------|')
         print('---------------------------AFTER---------------------------')
         print(f'This was the move_message: {move_message}.')
         [print(f'This is game {dict_key} and this is its position: {self.lukas_sticker.igre[dict_key].position}. This is its class mark: {self.lukas_sticker.igre[dict_key]}') for dict_key in self.lukas_sticker.igre.keys()]
@@ -118,6 +116,7 @@ class WebStickerGame(object):
     def set_last_winner(self, player_number):
         if player_number == '1':
             self.last_winner = self.player1
-        if player_number == '2':
+        elif player_number == '2':
             self.last_winner = self.player2
-
+        else:
+            raise Exception('Player number should be 1 or 2.')

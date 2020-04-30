@@ -3,13 +3,14 @@
 
 
 class Igra:
-    def __init__(self, position = [1, 3, 5, 7]):
+    def __init__(self, position = None):
+        if not position:
+            position = [1, 2, 3, 4]
         self.position = position
         self.player = 'player1'
     
     def move(self, row, num):
         '''Funkcija z validacijskimi metodami preveri pravilnost vnesenih podatkov. Če so podatki pravilni vrne 'Input is valid', sprejme vrstico in število oduzetih palic iz taiste vratice ter nato spremeni pozicijo na plošči. '''
-        print('I am STICKER.PY and I am making a move()')
 
         #Preveri validacijo
         if self.validation_row(row) == 'Row invalid':
@@ -96,7 +97,7 @@ class Sticker:
         else:
             return max(self.igre.keys()) + 1
     
-    def new_game(self,position = [1,3,5,7]):
+    def new_game(self,position = None):
         id_igre = self.add_new_id()
         game = Igra(position)
         

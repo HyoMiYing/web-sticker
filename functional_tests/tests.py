@@ -20,7 +20,6 @@ class FunctionalTest(StaticLiveServerTestCase):
     def print_functionality(self, functionality):
         return_of_functionality = exec(functionality)
         dir_of_functionality = dir(return_of_functionality)
-        print(f'This is the {functionality} print statement: {return_of_functionality}. This is its dir(): {dir_of_functionality}')
 
     def validate_current_player(self, current_player):
         player_in_HTML = self.browser.find_element_by_id('id_player').text
@@ -93,6 +92,7 @@ class FunctionalTest(StaticLiveServerTestCase):
                 option.click()
                 break
 
+        time.sleep(1.5)
         submit_button.click()
 
     def assert_round_x_of_y_is_finished(self, x, y):
