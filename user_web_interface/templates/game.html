@@ -39,7 +39,30 @@
     </audio>
     <script src="{% static 'app.js' %}"></script>
     <script>
- 	console.log('This is number of the current player: ' + {{ player_number }});
+	// Update color based on a player
+        var playerName = document.getElementById('id_player');
+	var gameBoard = document.getElementById('id_form');
+
+	function changeAllCardsTo (color) {
+		console.log('Change all cards to '+ color);
+		var allCards = gameBoard.getElementsByTagName('label');
+                for (var index = 0; index < allCards.length; index++) {
+			allCards[index].style.background = color;
+                }
+	}
+
+
+        if ({{player_number}} == 1) {
+		console.log('This is player1\'s turn!');
+		playerName.style.color = 'Red';
+		gameBoard.style.color = 'Red';
+		changeAllCardsTo = 'Red';
+	} else {
+		console.log('This is player2\'s turn!');
+		playerName.style.color = 'Blue';
+		gameBoard.style.color = 'Blue';
+		changeAllCardsTo = 'Blue';
+	}
     </script>
     <script>
 	// Get audio sound
