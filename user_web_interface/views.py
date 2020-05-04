@@ -42,7 +42,7 @@ def view_round(request, game_id):
     elif round_information['position'] == [0, 0, 0, 0]:
         return redirect('end_round', game_id)
     form = GameForm(round_information['position'])
-    return render(request, 'game.html', {'form':form, 'current_player':round_information['player'], 'game_id':game_id})
+    return render(request, 'game.html', {'form':form, 'current_player':round_information['player'], 'game_id':game_id, 'player_number':round_information['player_number']})
 
 def end_round(request, game_id):
     game_status = game_manager.get_game_status(game_id)

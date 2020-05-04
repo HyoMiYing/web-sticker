@@ -17,7 +17,6 @@ class GameForm(forms.Form):
             for card in range(cards):
                 self.fields[f'row{row}card{card}'] = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class':'checkbox'}),required=False, label=' ')
                 self.label_suffix = ''
-                # self.fields[f'row{row}card{card}'].label = '<label>yy</label>'
 
     def clean(self):
         checkboxes = super(GameForm, self).clean()

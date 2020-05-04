@@ -3,6 +3,7 @@
 /* Make divs inline */
 .custom-checkbox-input {
     display: inline;
+    font-size: 32px;
 }
 
 /* Hide default checkbox */
@@ -12,7 +13,6 @@ input[type=checkbox] {
 
 /* Set the size of a new checkbox */
 .checkbox {
-    font-size: 16px;
     line-height: 20px;
 }
 

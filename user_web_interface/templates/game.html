@@ -39,6 +39,9 @@
     </audio>
     <script src="{% static 'app.js' %}"></script>
     <script>
+ 	console.log('This is number of the current player: ' + {{ player_number }});
+    </script>
+    <script>
 	// Get audio sound
 	var audio = document.getElementById('move_sound')
 
