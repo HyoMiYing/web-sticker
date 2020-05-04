@@ -8,10 +8,7 @@
 {% endblock %}
 
 {% block body %}
-    <br>
-	<br>
 	<h1>Sticker Game</h1>
-    <br>
     <div id="id_message">
 		<h2>Create a game and invite your friend:</h2>
 		<form method="POST" action="{% url 'new_game' %}">
@@ -21,13 +18,25 @@
 		</form>
     </div>
 	<script>
+		// A prototype that adds insertAfter function to Element prototype
+		Element.prototype.insertAfter = function(newOne) {
+			this.parentNode.insertBefore(newOne, this.nextSibling);
+		}
+
 		document.onload = addBreakSpacesToForm();
 
 		function addBreakSpacesToForm () {
-			console.log('Start of the onload function.');
 			var allInputElements = document.getElementsByTagName('input');
+			var allSelectElements = document.getElementsByTagName('select');
+			for (index = 0; index < allSelectElements.length; index++) {
+				var currentSelectElement = allSelectElements[index];
+				var lineBreakElement = document.createElement('BR');
+				currentSelectElement.insertAfter(lineBreakElement);
+			}
 			for (index = 0; index < allInputElements.length; index++) {
-				console.log('this is element ' + index + '. Check it out :D ' + allInputElements[index] );
+				var currentInputElement = allInputElements[index];
+				var lineBreakElement = document.createElement('BR');
+				currentInputElement.insertAfter(lineBreakElement);
 			}
 		}
 	</script>

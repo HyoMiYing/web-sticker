@@ -6,7 +6,7 @@ class CreateNewGameForm(forms.Form):
     player1 = forms.CharField(min_length=3, max_length=20, empty_value='player1')
     player2 = forms.CharField(min_length=3, max_length=20, empty_value='player2')
     game_description = forms.CharField(max_length=50)
-    number_of_rounds = forms.ChoiceField(label_suffix=" (The first round is practice round): ", choices=NUMBER_OF_ROUNDS_CHOICES, initial=(7, '7 rounds'))
+    number_of_rounds = forms.ChoiceField(choices=NUMBER_OF_ROUNDS_CHOICES, initial=(7, '7 rounds'))
 
 class GameForm(forms.Form):
 
