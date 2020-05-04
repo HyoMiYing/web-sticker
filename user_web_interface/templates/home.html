@@ -1,49 +1,19 @@
 {% extends 'base.html' %}
 
-{% block page_title %}Sticker Home{% endblock %}
+{% block page_title %}Sticker - Home{% endblock %}
 
 {% block page_head %}
     {% load static %}
-	<link rel="stylesheet" href="{% static 'admin.css' %}">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="{% static 'home.css' %}">
 {% endblock %}
 
 {% block body %}
     <br>
 	<br>
-	<h1>Sticker Home Page</h1>
-	<p>You can join a game or create a new one!</p>
+	<h1>Sticker Game</h1>
     <br>
     <div id="id_message">
-		<h2>Join An Existing Game</h2>
-		<table id="id_dashboard_table">
-		<tr>
-			<th>Game ID</th>  
-			<th>Game position</th>  
-			<th>Current player on turn</th>
-			<th>Description</th>
-			<th></th>  
-		</tr>
-		{% if all_games_data %}
-			{% for game_information in all_games_data %}
-				<tr>
-					<td id="id_id_of_game{{ game_information.game_id }}">{{ game_information.game_id }}</td>
-					<td id="id_position_of_game{{ game_information.game_id }}">{{ game_information.game_position }}</td>
-					<td id="id_player_on_game{{ game_information.game_id }}">{{ game_information.player_on_turn }}</td>
-					<td id="id_description_of_game{{ game_information.game_id }}">{{ game_information.description }}</td>
-					<td id="id_link_to_game{{ game_information.game_id }}"><a href="{% url 'view_game' game_information.game_id %}">Visit Game</a></td>
-				</tr>
-			{% endfor %}
-		{% else %}
-			<tr>
-				<p>There are currently no games.</p>
-			</tr>
-		{% endif %}
-		</table>
-		<br>
-		<br>
-		<br>
-		<h2>Create New Game</h2>
+		<h2>Create a game and invite your friend:</h2>
 		<form method="POST" action="{% url 'new_game' %}">
 			{% csrf_token %}
 			{{ form }}
@@ -51,45 +21,14 @@
 		</form>
     </div>
 	<script>
-		setInterval(updateGameDashboard, 500);
-	
-		function getTableFromDOM() {
-			var tableInDOM = document.getElementById('id_dashboard_table').innerHTML;
-			var tableInDOMWithoutWhitespaces = removeWhitespacesFromString(tableInDOM);
-			var tableInDOMWithoutTbodyTags = removeTbodyTagsFromString(tableInDOMWithoutWhitespaces);
-			return tableInDOMWithoutTbodyTags;
-		}
-		
-		function removeWhitespacesFromString(string) {
-			var stringWithoutWhitespaces = string.replace(/\s/g, "");
-			return stringWithoutWhitespaces;
-		}
+		document.onload = addBreakSpacesToForm();
 
-		function removeTbodyTagsFromString(tableString) {
-			var removedFrontTag = tableString.replace("<tbody>", "");
-			var removedBothTags = removedFrontTag.replace("</tbody>", "");
-			return removedBothTags;
-		}
-
-		function updateGameDashboard () {
-			$.ajax({
-				synch: 'true',
-				type: 'GET',
-				url: '{% url "home" %}',
-				dataType: 'html',
-				success: function(data) {
-					var updatedTable = data.slice(data.indexOf('<tr>'), data.indexOf('</table>'));
-					var updatedTableWithoutWhitespaces = removeWhitespacesFromString(updatedTable);
-					var currentTableWithoutWhitespaces = getTableFromDOM();
-					if (currentTableWithoutWhitespaces == updatedTableWithoutWhitespaces) {
-					} else {
-						$('#id_dashboard_table').html(updatedTable);
-					};
-				},
-				error: function() {
-					console.log('Something is wrong, AJAX call failed');
-				}
-			})
+		function addBreakSpacesToForm () {
+			console.log('Start of the onload function.');
+			var allInputElements = document.getElementsByTagName('input');
+			for (index = 0; index < allInputElements.length; index++) {
+				console.log('this is element ' + index + '. Check it out :D ' + allInputElements[index] );
+			}
 		}
 	</script>
 {% endblock %}

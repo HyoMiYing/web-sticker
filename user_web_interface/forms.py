@@ -2,10 +2,6 @@ from django import forms
 
 class CreateNewGameForm(forms.Form):
     NUMBER_OF_ROUNDS_CHOICES = [(x+3, f'{x+3} rounds') for x in range(9)]
-#    NUMBER_OF_ROUNDS_CHOICES = [
-#        max(3, '3 rounds'),
-#        min(11, '11 rounds'),
-#    ]
 
     player1 = forms.CharField(min_length=3, max_length=20, empty_value='player1')
     player2 = forms.CharField(min_length=3, max_length=20, empty_value='player2')
