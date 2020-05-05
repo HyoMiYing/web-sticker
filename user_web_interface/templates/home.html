@@ -8,15 +8,31 @@
 {% endblock %}
 
 {% block body %}
-	<h1>Sticker Game</h1>
+	<h1>Sticker</h1>
+	<h2>Create a Game and Invite Your Friend</h2>
+    <div id="id_how_to_invite_a_friend">
+	<h3>How To Invite your friend</h3>
+	<p>After you create the game, <strong>Copy the URL</strong> and send it to your friend.<br>
+	when he makes a move, your browser tab will start blinking like this: </p>
+	<img src="{% static 'URLSlugBllinking.gif' %}" alt="Example of blinking URL Slug(Page title)">
+    </div>
     <div id="id_message">
-		<h2>Create a game and invite your friend:</h2>
+		<h3>Create a game:</h3>
 		<form method="POST" action="{% url 'new_game' %}">
 			{% csrf_token %}
 			{{ form }}
 			<input type="submit" value="Start New Game" id="id_submit_button">
 		</form>
     </div>
+    <div id="id_instructions">
+<br>
+<br>
+<br>
+	<h3>Game example</h3>
+    <img src="{% static 'LolekIBolekDemo2.gif' %}"
+	 alt="GIF, gameplay example">
+	<p>Detailed instructions are very short. You can read them anytime during the game.<br>
+	This game is <strong>very simple</strong>. It is expected that you will play it only once.</p> 
 	<script>
 		// A prototype that adds insertAfter function to Element prototype
 		Element.prototype.insertAfter = function(newOne) {

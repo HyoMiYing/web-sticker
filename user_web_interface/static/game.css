@@ -23,9 +23,9 @@ label {
 /* Styling of the checkbox before its clicked */
 label:before {
     display: inline-block;
-    width: 20px;
+    width: 34px;
     margin-right: 5px;
-    content: 'e';
+    content: 'S';
     text-align: center;
     background: #000;
     margin-bottom: 5px;

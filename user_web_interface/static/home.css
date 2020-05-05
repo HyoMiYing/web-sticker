@@ -1,1 +1,3 @@
-/* There is no styling yet. DELETE THIS TEXT IF YOU ADD SOME */
+#id_instructions img {
+border: 1px solid black;
+}
