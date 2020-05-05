@@ -32,8 +32,8 @@ def make_a_move(request, game_id):
          else:
              return HttpResponseRedirect(reverse('view_round', args=(game_id,)))
     else:
-        return render(request, 'home.html', {'form':form, 'current_player':round_information['player'], 'game_id':game_id})
-    
+        return render(request, 'game.html', {'form':form, 'current_player':round_information['player'], 'game_id':game_id, 'player_number': round_information['player_number']})
+
 def view_round(request, game_id):
     round_information = game_manager.get_round_information(game_id)
     # In case the round ended
