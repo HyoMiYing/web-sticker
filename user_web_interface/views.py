@@ -71,8 +71,8 @@ def end_game(request, game_id):
         return HttpResponseRedirect(reverse('view_round', args=(game_id,)))
     return render(request, 'end.html', context)
 
-#def admin_page(request):
-#    return render(request, 'admin.html', {'all_games_data': get_all_games_data()})
+def admin_page(request):
+    return render(request, 'admin.html', {'admin_data': game_manager.get_admin_data()})
 
 def handler404(request):
     return render(request, '404.html', status=404)

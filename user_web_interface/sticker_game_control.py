@@ -8,6 +8,14 @@ class WebStickerGameManager(object):
     def __init__(self):
         self.dictionary_of_games = {}
 
+    def get_admin_data(self):
+        game_touples = []
+        for element in self.dictionary_of_games:
+            game_instance = self.dictionary_of_games[element]
+            touple = (f'Player 1: {game_instance.player1}', f'Player 2: {game_instance.player2}', f'Number of rounds: {game_instance.number_of_rounds}')
+            game_touples.append(touple)
+        return game_touples
+
     def find_new_id_in_dictionary_of_games(self):
         if self.dictionary_of_games == {}:
             return 0

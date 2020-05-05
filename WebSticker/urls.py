@@ -24,5 +24,5 @@ urlpatterns = [
     path('game/<int:game_id>', views.view_round, name='view_round'),
     path('end_round/<int:game_id>', views.end_round, name='end_round'),
     path('end_game/<int:game_id>', views.end_game, name='end_game'),
-#    path('admin', views.admin_page, name='admin'),
+    path('admin', views.admin_page, name='admin'),
 ]

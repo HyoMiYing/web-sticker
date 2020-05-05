@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Game Over{% endblock %}
+
+{% block page_head %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'end.css' %}">
+{% endblock %}
+
+{% block body %}
+    <br>
+    <br>
+    <br>
+    <div id="id_message">
+        <h1>Admin games overview</h1>
+	<h2>You found it, you smart!<h2>
+<ol>
+{% for game in admin_data%}
+	<li>{{ game }}</li>
+{% endfor %}
+</ol>
+	
+    </div>
+{% endblock %}
