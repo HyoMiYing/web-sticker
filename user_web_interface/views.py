@@ -61,6 +61,8 @@ def end_game(request, game_id):
         else:
             context = {'tie': 'It\'s a tie!'}
         context['number_of_played_rounds'] = game_status['number_of_played_rounds']
+        context['player1'] = game_status['player1']
+        context['player2'] = game_status['player2']
         if game_status['player1_wins']: 
             context['player1_wins'] = game_status['player1_wins']
         if game_status['player2_wins']: 

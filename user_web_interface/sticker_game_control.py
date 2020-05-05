@@ -48,7 +48,7 @@ class WebStickerGameManager(object):
                 game_status_dictionary = {'winner': correct_game.player1}
             else:
                 raise Exception('Wrong player win value.')            
-            game_status_dictionary.update({'Game over': True, 'number_of_played_rounds': number_of_played_rounds, 'player1_wins': correct_game.player1_wins, 'player2_wins': correct_game.player2_wins}) 
+            game_status_dictionary.update({'Game over': True, 'number_of_played_rounds': number_of_played_rounds, 'player1_wins': correct_game.player1_wins, 'player2_wins': correct_game.player2_wins, 'player1': correct_game.player1, 'player2': correct_game.player2}) 
             return game_status_dictionary
         return {'number_of_played_rounds': number_of_played_rounds, 'number_of_all_rounds': number_of_all_rounds}
 
@@ -68,7 +68,6 @@ class WebStickerGame(object):
         self.player1 = cleaned_form_data['player1']
         self.player2 = cleaned_form_data['player2']
         self.number_of_rounds = int(cleaned_form_data['number_of_rounds'])
-        self.description = cleaned_form_data['game_description']
         self.current_round = 1
         self.lukas_sticker = Sticker()
         [self.lukas_sticker.new_game() for round in range(self.number_of_rounds)]

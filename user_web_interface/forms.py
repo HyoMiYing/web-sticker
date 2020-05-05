@@ -3,10 +3,9 @@ from django import forms
 class CreateNewGameForm(forms.Form):
     NUMBER_OF_ROUNDS_CHOICES = [(x+3, f'{x+3} rounds') for x in range(9)]
 
-    player1 = forms.CharField(min_length=3, max_length=20, empty_value='player1')
-    player2 = forms.CharField(min_length=3, max_length=20, empty_value='player2')
-    game_description = forms.CharField(max_length=50)
-    number_of_rounds = forms.ChoiceField(choices=NUMBER_OF_ROUNDS_CHOICES, initial=(7, '7 rounds'))
+    player1 = forms.CharField(min_length=3, max_length=20, empty_value='player1', label='Player 1\'s name', label_suffix=": ")
+    player2 = forms.CharField(min_length=3, max_length=20, empty_value='player2', label='Player 2\'s name', label_suffix=": ")
+    number_of_rounds = forms.ChoiceField(choices=NUMBER_OF_ROUNDS_CHOICES, initial=(7, '7 rounds'), label='Number of rounds', label_suffix=": ")
 
 class GameForm(forms.Form):
 

@@ -77,16 +77,14 @@ class FunctionalTest(StaticLiveServerTestCase):
         else:
             raise AssertionError
 
-    def start_new_game(self, player1, player2, game_description, number_of_rounds=3):
+    def start_new_game(self, player1, player2, number_of_rounds=3):
         player1_field = self.browser.find_element_by_id('id_player1')
         player2_field = self.browser.find_element_by_id('id_player2')
-        game_description_field = self.browser.find_element_by_id('id_game_description')
         number_of_rounds_field = self.browser.find_element_by_id('id_number_of_rounds')
         submit_button = self.browser.find_element_by_id('id_submit_button')
 
         player1_field.send_keys(player1)
         player2_field.send_keys(player2)
-        game_description_field.send_keys(game_description)
         for option in number_of_rounds_field.find_elements_by_tag_name('option'):
             if option.text == f'{number_of_rounds} rounds':
                 option.click()
@@ -129,7 +127,7 @@ class FunctionalTest(StaticLiveServerTestCase):
 	# Since he is playing with himself, he enters both player1 and player2 as 'Rok'.
 	# Game description is 'Just playing with myself'. He also choses to play the least number of
 	# rounds (3)
-        self.start_new_game('Rok', 'Rok', 'Just playing with myself', 3)
+        self.start_new_game('Rok', 'Rok', 3)
 
         # He notices there is a 'show instructions' link on the page
         show_instructions_link = self.browser.find_element_by_link_text('Show instructions')
@@ -137,7 +135,7 @@ class FunctionalTest(StaticLiveServerTestCase):
 
         # Now he can read the game rules
         game_rules = self.browser.find_element_by_id('id_game_rules').text
-        self.assertIn('The player who picks up the last card, loses.', game_rules)
+        self.assertIn('The player who picks up the last card, loses', game_rules)
 
 	# He plays a round
         self.play_a_round('Rok', 'Rok')
@@ -178,7 +176,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.get(self.live_server_url)
 
         # He starts new game
-        self.start_new_game('Rok', 'Rok', 'Še en dan, še ena igra', 3)
+        self.start_new_game('Rok', 'Rok', 3)
         self.validate_current_player('Rok')
         self.remove_cards_from_row(3, 2)
         cards_in_second_row = self.browser.find_elements_by_css_selector('label[for^="id_row1card"]')
@@ -197,7 +195,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         # Dino visits the home page.
         self.browser.get(self.live_server_url)
 	# He starts his own game.
-        self.start_new_game('Dino', 'Dean', 'Đe si brate! Daj, ajmo!', 11)
+        self.start_new_game('Dino', 'Dean', 11)
         # There is no sign of Rok's moves!
         cards_in_second_row = self.browser.find_elements_by_css_selector('label[for^="id_row1card"]')
         self.assertEquals(len(cards_in_second_row), 3, f'There are {cards_in_second_row} cards in second row. There should be only 3')
@@ -223,7 +221,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.get(self.live_server_url)
 
 	# He creates new game
-        self.start_new_game('The Bamboozler', 'The Bamboozler', 'Here i go bamboozlin\' again!', 5)
+        self.start_new_game('The Bamboozler', 'The Bamboozler', 5)
 
         # He sees a new game form, full of cards. The Bamboozler
         # decides to submit an empty form.
@@ -241,7 +239,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.get(self.live_server_url)
 
         # He sees it is a 2 player game. He decides he will play the game with his friend, Jacques.
-        self.start_new_game('Sacre Bleu', 'Jacques', 'Bonjour Jacques, join this game!', 5)
+        self.start_new_game('Sacre Bleu', 'Jacques', 5)
 
         # Now Sacre Bleu makes a move
         self.validate_current_player('Sacre Bleu')
@@ -308,7 +306,7 @@ class FunctionalTest(StaticLiveServerTestCase):
 	# Rok wakes up from his power nap
 	# It is time for another good ol' game with himself
         self.browser.get(self.live_server_url)
-        self.start_new_game('Rok', 'Rok', 'Rokovina kruh tortilja igra se igra')
+        self.start_new_game('Rok', 'Rok')
         time.sleep(0.5)
 
         # The Moderator is still on the watch. He is eating doughnuts and sippin' coffee when suddenly
