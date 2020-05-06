@@ -44,9 +44,17 @@ input:checked ~ label::before {
 
 
 /* FORM STYLING */
-/* Alling cards horizontally */
 form {
     text-align: center;
+}
+
+.custom-checkbox-input > *::selection {
+    background: #FFF;
+}
+
+
+.custom-checkbox-input > *::-moz-selection {
+    background: #FFF;
 }
 
 /* errors */
@@ -66,3 +74,4 @@ h1, h3 {
 #id_instructions_link, #id_game_rules {
     text-align: center;
 }
+
