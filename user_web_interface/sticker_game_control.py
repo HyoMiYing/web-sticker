@@ -90,12 +90,18 @@ class WebStickerGame(object):
         if current_games_position == [0, 0, 0, 0]:
             return False
         current_player = current_game.player
-        if current_player == 'player1':
+        if current_player == 'player1' and self.current_round % 2 == 1:
             current_player_name = self.player1
             current_player_number = 1
-        elif current_player == 'player2':
+        elif current_player == 'player1' and self.current_round % 2 == 0:
             current_player_name = self.player2
             current_player_number = 2
+        elif current_player == 'player2' and self.current_round % 2 == 1:
+            current_player_name = self.player2
+            current_player_number = 2
+        elif current_player == 'player2' and self.current_round % 2 == 0:
+            current_player_name = self.player1
+            current_player_number = 1
         else:
             raise Exception('Current player should be either player1 or player2')
         return {'player': current_player_name, 'position': current_games_position, 'player_number': current_player_number}
