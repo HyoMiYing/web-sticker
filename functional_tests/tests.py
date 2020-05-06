@@ -95,7 +95,6 @@ class FunctionalTest(StaticLiveServerTestCase):
 
     def assert_round_x_of_y_is_finished(self, x, y):
         number_of_finished_rounds = f'{x}'
-        print(f'Number of finished rounds: {number_of_finished_rounds}')
         number_of_finished_rounds_in_HTML = self.browser.find_element_by_id('id_finished_rounds').text
         number_of_all_rounds = f'{y}'
         number_of_all_rounds_in_HTML = self.browser.find_element_by_id('id_all_rounds').text
@@ -106,7 +105,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         end_of_round_declaration = self.browser.find_element_by_id('id_end_of_round_information').text
         self.assertIn(f'{winning_player} won round {round_number}', end_of_round_declaration)
 
-    def play_a_round(self, player1, player2):
+    def play_a_round(self, player1, player2, winner='player2'):
 	#player2 always wins
         self.validate_current_player(player1)
         self.remove_cards_from_row(1, 1)
@@ -114,18 +113,29 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.remove_cards_from_row(3, 2)
         self.validate_current_player(player1)
         self.remove_cards_from_row(5, 3)
-        self.validate_current_player(player2)
-        self.remove_cards_from_row(6, 4)
-        self.validate_current_player(player1)
-        self.remove_cards_from_row(1, 4)
+        if winner == 'player2':
+            self.validate_current_player(player2)
+            self.remove_cards_from_row(6, 4)
+            self.validate_current_player(player1)
+            self.remove_cards_from_row(1, 4)
+        else:
+            self.validate_current_player(player2)
+            self.remove_cards_from_row(7, 4)
 
     def play_a_game_with_x_rounds_with_player1_and_player2(self, number_of_rounds, player1, player2):
+        starting_player = player1
+        following_player = player2
         for round in range(number_of_rounds):
             actual_round_number = round + 1
             if actual_round_number == number_of_rounds:
-                self.play_a_round(player1, player2)
+                self.play_a_round(starting_player, following_player)
             else:
-                self.play_a_round(player1, player2)
+                self.play_a_round(starting_player, following_player)
+                starting_player = following_player
+                if following_player == player1:
+                    following_player = player2
+                else:
+                    following_player = player1
                 self.assert_correct_player_has_won_this_round(player2, actual_round_number)
                 self.assert_round_x_of_y_is_finished(actual_round_number, number_of_rounds)
                 continue_link = self.browser.find_element_by_link_text('Continue') 
