@@ -95,6 +95,7 @@ class FunctionalTest(StaticLiveServerTestCase):
 
     def assert_round_x_of_y_is_finished(self, x, y):
         number_of_finished_rounds = f'{x}'
+        print(f'Number of finished rounds: {number_of_finished_rounds}')
         number_of_finished_rounds_in_HTML = self.browser.find_element_by_id('id_finished_rounds').text
         number_of_all_rounds = f'{y}'
         number_of_all_rounds_in_HTML = self.browser.find_element_by_id('id_all_rounds').text
@@ -118,45 +119,26 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.validate_current_player(player1)
         self.remove_cards_from_row(1, 4)
 
+    def play_a_game_with_x_rounds_with_player1_and_player2(self, number_of_rounds, player1, player2):
+        for round in range(number_of_rounds):
+            actual_round_number = round + 1
+            if actual_round_number == number_of_rounds:
+                self.play_a_round(player1, player2)
+            else:
+                self.play_a_round(player1, player2)
+                self.assert_correct_player_has_won_this_round(player2, actual_round_number)
+                self.assert_round_x_of_y_is_finished(actual_round_number, number_of_rounds)
+                continue_link = self.browser.find_element_by_link_text('Continue') 
+                continue_link.click()
+                time.sleep(0.5)
+
     def test_end_game_data_is_correct(self):
         self.browser.get(self.live_server_url)
         self.assertIn('Sticker', self.browser.title)
 
         self.start_new_game('Ajoy', 'Rokovsky', 3)
 
-        # He notices there is a 'show instructions' link on the page
-        show_instructions_link = self.browser.find_element_by_link_text('Show instructions')
-        show_instructions_link.click()
-
-        # Now he can read the game rules
-        game_rules = self.browser.find_element_by_id('id_game_rules').text
-        self.assertIn('The player who picks up the last card, loses', game_rules)
-
-	# He plays a round
-        self.play_a_round('Ajoy', 'Rokovsky')
-
-        # The round 1 of 3 is over. Winner is Rok (because Kor picked up the last card)
-        self.assert_correct_player_has_won_this_round('Rokovsky', 1)
-        self.assert_round_x_of_y_is_finished(1, 3)
-
-	# He pesses continue link to proceed to another round
-        continue_link = self.browser.find_element_by_link_text('Continue') 
-        continue_link.click()
-        time.sleep(0.5)
-
-	# He plays another round
-        self.play_a_round('Ajoy', 'Rokovsky')
-
-        # The round 2 of 3 is over. Winner is Rok (because Rok picked up the last card)
-        self.assert_correct_player_has_won_this_round('Rokovsky', 2)
-        self.assert_round_x_of_y_is_finished(2, 3)
-
-        continue_link = self.browser.find_element_by_link_text('Continue') 
-        continue_link.click()
-        time.sleep(0.5)
-
-	# He plays the last round
-        self.play_a_round('Ajoy', 'Rokovsky')
+        self.play_a_game_with_x_rounds_with_player1_and_player2(3, 'Ajoy', 'Rokovsky')
 
         # The round 3 of 3 is over. Now the winner of the whole game is Rok.
 	# That is because Rok had won 3 games and Rok had won 0 games.
