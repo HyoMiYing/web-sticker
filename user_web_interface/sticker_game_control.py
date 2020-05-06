@@ -56,7 +56,7 @@ class WebStickerGameManager(object):
                 game_status_dictionary = {'winner': correct_game.player1}
             else:
                 raise Exception('Wrong player win value.')            
-            game_status_dictionary.update({'Game over': True, 'number_of_played_rounds': number_of_played_rounds, 'player1_wins': correct_game.player1_wins, 'player2_wins': correct_game.player2_wins, 'player1': correct_game.player1, 'player2': correct_game.player2}) 
+            game_status_dictionary.update({'Game over': True, 'number_of_played_rounds': number_of_played_rounds, 'player1_wins': str(correct_game.player1_wins), 'player2_wins': str(correct_game.player2_wins), 'player1': correct_game.player1, 'player2': correct_game.player2}) 
             return game_status_dictionary
         return {'number_of_played_rounds': number_of_played_rounds, 'number_of_all_rounds': number_of_all_rounds}
 
