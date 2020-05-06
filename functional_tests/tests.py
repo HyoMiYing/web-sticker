@@ -116,6 +116,57 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.validate_current_player(player2)
         self.remove_cards_from_row(7, 4)
 
+    def test_end_game_data_is_correct(self):
+        self.browser.get(self.live_server_url)
+        self.assertIn('Sticker', self.browser.title)
+
+        self.start_new_game('Rok', 'Kor', 3)
+
+        # He notices there is a 'show instructions' link on the page
+        show_instructions_link = self.browser.find_element_by_link_text('Show instructions')
+        show_instructions_link.click()
+
+        # Now he can read the game rules
+        game_rules = self.browser.find_element_by_id('id_game_rules').text
+        self.assertIn('The player who picks up the last card, loses', game_rules)
+
+	# He plays a round
+        self.play_a_round('Rok', 'Kor')
+
+        # The round 1 of 3 is over. Winner is Rok (because Kor picked up the last card)
+        self.assert_correct_player_has_won_this_round('Rok', 1)
+        self.assert_round_x_of_y_is_finished(1, 3)
+
+	# He pesses continue link to proceed to another round
+        continue_link = self.browser.find_element_by_link_text('Continue') 
+        continue_link.click()
+        time.sleep(0.5)
+
+	# He plays another round
+        self.play_a_round('Rok', 'Kor')
+
+        # The round 2 of 3 is over. Winner is Rok (because Rok picked up the last card)
+        self.assert_correct_player_has_won_this_round('Rok', 2)
+        self.assert_round_x_of_y_is_finished(2, 3)
+
+        continue_link = self.browser.find_element_by_link_text('Continue') 
+        continue_link.click()
+        time.sleep(0.5)
+
+	# He plays the last round
+        self.play_a_round('Rok', 'Kor')
+
+        # The round 3 of 3 is over. Now the winner of the whole game is Rok.
+	# That is because Rok had won 3 games and Rok had won 0 games.
+        self.assertIn('Rok, you won the game!', self.browser.find_element_by_tag_name('body').text)
+        self.assertIn('Number of rounds Rok won: 3', self.browser.find_element_by_tag_name('body').text)
+        self.assertIn('Number of rounds Kor won: 0', self.browser.find_element_by_tag_name('body').text)
+
+        # And there is also a link to another game
+        self.browser.find_element_by_link_text('Play New Game')
+
+
+
     def test_user_can_play_a_game_with_himself(self):
         # Kinda silly I know
 
