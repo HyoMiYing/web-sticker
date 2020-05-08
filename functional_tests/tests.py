@@ -278,7 +278,7 @@ class FunctionalTest(StaticLiveServerTestCase):
 
 	# Surprised, that his bamboozlin' plan didn't work out, he decides to turn off the computer
 	# untill he gets a new bamboozle idea
-    @unittest.skip
+
     def test_games_can_be_played_between_two_players_online_without_them_having_to_refresh_the_page(self):
         # Sacre Bleu finds cool new online game
         self.browser.get(self.live_server_url)
@@ -339,7 +339,6 @@ class FunctionalTest(StaticLiveServerTestCase):
 	# to rest.
         self.browserJacques.quit()
 
-    @unittest.skip
     def test_home_html_is_able_to_update_itself(self):
         # The Moderator goes to the homepage of the application(he's just there)
         the_moderators_window = webdriver.Firefox()
