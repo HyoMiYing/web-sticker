@@ -29,6 +29,11 @@ class FunctionalTest(StaticLiveServerTestCase):
         player_in_HTML = browser.find_element_by_id('id_player').text
         self.assertEqual(current_player, player_in_HTML)
 
+    def assert_correct_current_player_color_in_browser(self, correct_color, browser):
+        colored_element = browser.find_element_by_id('id_player')
+        color_name = colored_element.value_of_css_property('color')
+        self.assertEqual(color_name, correct_color)
+
     def remove_cards_from_row_in_foreign_browser(self, number_of_cards, row_number, browser):
         # Select all cards from row
         chosen_cards = browser.find_elements_by_css_selector(f'label[for^="id_row{row_number-1}card"]')
@@ -288,6 +293,7 @@ class FunctionalTest(StaticLiveServerTestCase):
 
         # Now Sacre Bleu makes a move
         self.validate_current_player('Sacre Bleu')
+        self.assert_correct_current_player_color_in_browser('rgb(255, 0, 0)', self.browser)
         self.remove_cards_from_row(1, 1)
 
         # Now it is Jacques's turn
@@ -311,6 +317,7 @@ class FunctionalTest(StaticLiveServerTestCase):
 
 	# Now Jacques finds himself in the game, and it is his turn!
         self.validate_current_player_in_foreign_browser('Jacques', self.browserJacques)
+        self.assert_correct_current_player_color_in_browser('rgb(0, 0, 255)', self.browserJacques)
 
 	# He reads the instructions and decides to remove all cards from the thrid row
         self.remove_cards_from_row_in_foreign_browser(5, 3, self.browserJacques)
@@ -326,6 +333,9 @@ class FunctionalTest(StaticLiveServerTestCase):
         time.sleep(1)
 	# He sees it really is his turn
         self.validate_current_player('Sacre Bleu')
+        time.sleep(5)
+        self.assert_correct_current_player_color_in_browser('rgb(255, 0, 0)', self.browser)
+        self.assert_correct_current_player_color_in_browser('rgb(255, 0, 0)', self.browserJacques)
 	# Then Sacre Bleu says to himself: "Oh, seigneur! This webpage is très bien fait! I can go rest
 	# now."
 	# Jacques is confused, because Sacre Bleu doesn't make a move. Tired of waiting he also goes
