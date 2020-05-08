@@ -15,6 +15,7 @@
     </div>
     <br>
     <h3 id="id_player" class="player_shower">{{ current_player }}</h3>
+    <h3 id="id_player_number" style="visibility: hidden;"><span>{{ player_number }}</span></h3>
     <div>
         <br>
         <form id="id_form" action="{% url 'make_a_move' game_id %}" method="POST">
@@ -71,15 +72,19 @@
 	}
 
 
-        if ({{player_number}} == 1) {
-		playerName.style.color = 'Red';
-		gameBoard.style.color = 'Red';
-		changeAllCardsTo = 'Red';
-	} else {
-		playerName.style.color = 'Blue';
-		gameBoard.style.color = 'Blue';
-		changeAllCardsTo = 'Blue';
+	function updateUIColor(playerNumber) {
+	        if (playerNumber == 1) {
+			playerName.style.color = 'Red';
+			gameBoard.style.color = 'Red';
+			changeAllCardsTo = 'Red';
+		} else {
+			playerName.style.color = 'Blue';
+			gameBoard.style.color = 'Blue';
+			changeAllCardsTo = 'Blue';
+		}
 	}
+
+	updateUIColor({{ player_number }});
     </script>
     <script>
 	// Get audio sound
@@ -129,12 +134,15 @@
 				} else {
 					var updatedForm = data.slice(data.indexOf('<input type="hidden" name="csrfmiddlewaretoken"'), data.indexOf('</form>'));
 					var updatedPlayer = data.slice(data.indexOf('class="player_shower"') + 22, data.indexOf('</h3>'));
+					var updatedPlayerNumberContainer = data.slice(data.indexOf('<h3 id="id_player_number" style="visibility: hidden;">'), data.indexOf('</span></h3>'));
+					var updatedPlayerNumber = updatedPlayerNumberContainer[updatedPlayerNumberContainer.length -1];
 					var realNumberOfCards = countCardsInString(updatedForm);
 					var numberOfCardsInDOM = countCardsInDOM();
 					if (realNumberOfCards == numberOfCardsInDOM) {
 					} else {
 						$('#id_form').html(updatedForm);
 						$('#id_player').html(updatedPlayer);
+						updateUIColor(updatedPlayerNumber);
 						breakSpaceTheCards();
 						audio.play();
 						blinkTitleUntillPageIsClicked();

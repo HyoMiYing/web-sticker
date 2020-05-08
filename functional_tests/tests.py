@@ -333,7 +333,6 @@ class FunctionalTest(StaticLiveServerTestCase):
         time.sleep(1)
 	# He sees it really is his turn
         self.validate_current_player('Sacre Bleu')
-        time.sleep(5)
         self.assert_correct_current_player_color_in_browser('rgb(255, 0, 0)', self.browser)
         self.assert_correct_current_player_color_in_browser('rgb(255, 0, 0)', self.browserJacques)
 	# Then Sacre Bleu says to himself: "Oh, seigneur! This webpage is très bien fait! I can go rest
