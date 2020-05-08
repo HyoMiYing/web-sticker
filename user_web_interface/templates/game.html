@@ -139,6 +139,9 @@
 					var realNumberOfCards = countCardsInString(updatedForm);
 					var numberOfCardsInDOM = countCardsInDOM();
 					if (realNumberOfCards == numberOfCardsInDOM) {
+					}
+					else if (realNumberOfCards > numberOfCardsInDOM) {
+						window.location = '{% url 'end_round' game_id %}';
 					} else {
 						$('#id_form').html(updatedForm);
 						$('#id_player').html(updatedPlayer);

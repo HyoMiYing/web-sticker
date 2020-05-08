@@ -110,6 +110,10 @@ class FunctionalTest(StaticLiveServerTestCase):
         end_of_round_declaration = self.browser.find_element_by_id('id_end_of_round_information').text
         self.assertIn(f'{winning_player} won round {round_number}', end_of_round_declaration)
 
+    def assert_correct_player_has_won_this_round_in_foreign_browser(self, winning_player, round_number, browser):
+        end_of_round_declaration = browser.find_element_by_id('id_end_of_round_information').text
+        self.assertIn(f'{winning_player} won round {round_number}', end_of_round_declaration)
+
     def play_a_round(self, player1, player2, winner='player2'):
 	#player2 always wins
         self.validate_current_player(player1)
@@ -335,8 +339,21 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.validate_current_player('Sacre Bleu')
         self.assert_correct_current_player_color_in_browser('rgb(255, 0, 0)', self.browser)
         self.assert_correct_current_player_color_in_browser('rgb(255, 0, 0)', self.browserJacques)
-	# Then Sacre Bleu says to himself: "Oh, seigneur! This webpage is très bien fait! I can go rest
-	# now."
+	# Then Sacre Bleu says to himself: "Oh, seigneur! This webpage is très bien fait!"
+	# He then removes all cards in 4th row
+        self.remove_cards_from_row(7, 4)
+    # Jacques sees Sacre Bleu's bold move!
+        self.validate_current_player('Jacques')
+        time.sleep(0.5)
+        self.validate_current_player_in_foreign_browser('Jacques', self.browserJacques)
+        self.assert_correct_current_player_color_in_browser('rgb(0, 0, 255)', self.browser)
+        self.assert_correct_current_player_color_in_browser('rgb(0, 0, 255)', self.browserJacques)
+    # He admires Sacre Bleu and decides to give him the win.
+        self.remove_cards_from_row_in_foreign_browser(3, 2, self.browserJacques)
+    # Round is over and sacre bleu won
+        time.sleep(0.5)
+        self.assert_correct_player_has_won_this_round('Sacre Bleu', 1)
+        self.assert_correct_player_has_won_this_round_in_foreign_browser('Sacre Bleu', 1, self.browserJacques)
 	# Jacques is confused, because Sacre Bleu doesn't make a move. Tired of waiting he also goes
 	# to rest.
         self.browserJacques.quit()
