@@ -123,16 +123,22 @@ class WebStickerGame(object):
         move_message = current_game.move(cleaned_POST_data['row_number'], cleaned_POST_data['number_of_cards'])
         if re.search('Game over', move_message):
             player_number = list(move_message)[-1]
-            self.set_last_winner(player_number)
+            self.set_last_winner(str(player_number))
             self.current_round += 1
         return move_message
 
     def set_last_winner(self, player_number):
-        if player_number == '1':
+        if player_number == '1' and self.current_round % 2 == 1:
             self.last_winner = self.player1
             self.player1_wins += 1
-        elif player_number == '2':
+        elif player_number == '1' and self.current_round % 2 == 0:
             self.last_winner = self.player2
             self.player2_wins += 1
+        elif player_number == '2' and self.current_round % 2 == 1:
+            self.last_winner = self.player2
+            self.player2_wins += 1
+        elif player_number == '2' and self.current_round % 2 == 0:
+            self.last_winner = self.player1
+            self.player1_wins += 1
         else:
             raise Exception('Player number should be 1 or 2.')

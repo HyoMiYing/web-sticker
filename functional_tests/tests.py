@@ -34,6 +34,12 @@ class FunctionalTest(StaticLiveServerTestCase):
         color_name = colored_element.value_of_css_property('color')
         self.assertEqual(color_name, correct_color)
 
+    def assert_browsers_on_both_ends_display_correct_data(self, current_player, current_color, foreign_browser):
+        self.validate_current_player(current_player)
+        self.validate_current_player_in_foreign_browser(current_player, foreign_browser)
+        self.assert_correct_current_player_color_in_browser(current_color, self.browser)
+        self.assert_correct_current_player_color_in_browser(current_color, foreign_browser)
+
     def remove_cards_from_row_in_foreign_browser(self, number_of_cards, row_number, browser):
         # Select all cards from row
         chosen_cards = browser.find_elements_by_css_selector(f'label[for^="id_row{row_number-1}card"]')
@@ -198,7 +204,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.assert_correct_player_has_won_this_round('Rok', 1)
         self.assert_round_x_of_y_is_finished(1, 3)
 
-	# He pesses continue link to proceed to another round
+	# He presses continue link to proceed to another round
         continue_link = self.browser.find_element_by_link_text('Continue') 
         continue_link.click()
         time.sleep(0.5)
@@ -354,6 +360,36 @@ class FunctionalTest(StaticLiveServerTestCase):
         time.sleep(0.5)
         self.assert_correct_player_has_won_this_round('Sacre Bleu', 1)
         self.assert_correct_player_has_won_this_round_in_foreign_browser('Sacre Bleu', 1, self.browserJacques)
+
+	# They both press continue link to proceed to the next round
+        continue_link = self.browser.find_element_by_link_text('Continue') 
+        continue_link.click()
+        
+        continue_link = self.browserJacques.find_element_by_link_text('Continue') 
+        continue_link.click()
+        time.sleep(0.5)
+
+    # Now Jacques is the one who is first to go...
+        self.assert_browsers_on_both_ends_display_correct_data('Jacques', 'rgb(0, 0, 255)', self.browserJacques)
+        self.remove_cards_from_row_in_foreign_browser(1, 1, self.browserJacques)
+        time.sleep(0.5)
+
+        self.assert_browsers_on_both_ends_display_correct_data('Sacre Bleu', 'rgb(255, 0, 0)', self.browserJacques)
+        self.remove_cards_from_row(7, 4)
+        time.sleep(0.5)
+
+        self.assert_browsers_on_both_ends_display_correct_data('Jacques', 'rgb(0, 0, 255)', self.browserJacques)
+        self.remove_cards_from_row_in_foreign_browser(5, 3, self.browserJacques)
+        time.sleep(0.5)
+
+        self.assert_browsers_on_both_ends_display_correct_data('Sacre Bleu', 'rgb(255, 0, 0)', self.browserJacques)
+        self.remove_cards_from_row(3, 2)
+        time.sleep(0.5)
+
+        self.assert_correct_player_has_won_this_round('Jacques', 2)
+        self.assert_correct_player_has_won_this_round_in_foreign_browser('Jacques', 2, self.browserJacques)
+        time.sleep(0.5)
+
 	# Jacques is confused, because Sacre Bleu doesn't make a move. Tired of waiting he also goes
 	# to rest.
         self.browserJacques.quit()

@@ -31,7 +31,6 @@ class Igra:
 
     def end(self):
         '''Funkcija se zažene na začetku vsakega kroga kjer preveri ali je na plošča prazna in je torej igra končana. Ča je slednje res vrne True, v nasprotnem primeru pa False.  '''
-        
         stevilo_praznih_vrstic = self.position.count(0)
         
         if stevilo_praznih_vrstic == len(self.position):
