@@ -297,24 +297,17 @@ class FunctionalTest(StaticLiveServerTestCase):
 	# Sacre Bleu decides that he will send the website's link to Jacques by SMS.
 	# He sends him an sms: "Éh! Quoi de neuf? Moi, Sacre Bleu have make a great discovery!
 	# Un grand online game, Sticker! It is for un intellectuels like tu et moi! Let's play!
-	# www.the-game-website.com"
+	# www.the-game-website.com/game/x"
+        game_url = self.browser.current_url
 
 	# Now Sacre Bleu decides to wait. He leaves the Sticker tab to be open and goes to read Wikipedia
         self.browser.execute_script("window.open('');")
         self.browser.switch_to.window(self.browser.window_handles[1])
         self.browser.get('https://en.wikipedia.org')
 
-	# After some time, Jacques reads Sacre Bleu's SMS and goes to the Sticker homepage.
+	# After some time, Jacques reads Sacre Bleu's SMS and goes to the URL.
         self.browserJacques = webdriver.Firefox()
-        self.browserJacques.get(self.live_server_url)
-
-	# There he sees a list of all running games. He finds the description saying 'Bonjour Jacques, join this game!'
-        the_games_description_id = self.browserJacques.find_element_by_xpath('//td[text()="Bonjour Jacques, join this game!"]').get_attribute('id')
-
-        # Then he presses the Visit Game link accompanying the description
-        id_of_sacres_and_jacques_game = list(the_games_description_id)[-1]
-        the_correct_visit_game_link = self.browserJacques.find_element_by_id('id_link_to_game'+id_of_sacres_and_jacques_game)
-        the_correct_visit_game_link.click()
+        self.browserJacques.get(game_url)
 
 	# Now Jacques finds himself in the game, and it is his turn!
         self.validate_current_player_in_foreign_browser('Jacques', self.browserJacques)
@@ -338,24 +331,3 @@ class FunctionalTest(StaticLiveServerTestCase):
 	# Jacques is confused, because Sacre Bleu doesn't make a move. Tired of waiting he also goes
 	# to rest.
         self.browserJacques.quit()
-
-    def test_home_html_is_able_to_update_itself(self):
-        # The Moderator goes to the homepage of the application(he's just there)
-        the_moderators_window = webdriver.Firefox()
-        the_moderators_window.get(self.live_server_url)
-        self.assertIn('Sticker Home', the_moderators_window.title)
-	# He doesn't see any 'Rok' playin' the Sticker game...
-        self.assertNotIn('Rok', the_moderators_window.page_source)
-
-	# Rok wakes up from his power nap
-	# It is time for another good ol' game with himself
-        self.browser.get(self.live_server_url)
-        self.start_new_game('Rok', 'Rok')
-        time.sleep(0.5)
-
-        # The Moderator is still on the watch. He is eating doughnuts and sippin' coffee when suddenly
-	# Rok's name appears on screen. It appears he is playin' a game...
-        self.assertIn('Rok', the_moderators_window.page_source)
-	# The Moderator says to himself: "Another successful day of watching over the internet"
-	# Then, he goes offline.
-        the_moderators_window.quit()
