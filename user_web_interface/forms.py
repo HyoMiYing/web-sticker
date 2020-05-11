@@ -7,6 +7,12 @@ class CreateNewGameForm(forms.Form):
     player2 = forms.CharField(min_length=3, max_length=20, empty_value='player2', label='Player 2\'s name', label_suffix=": ")
     number_of_rounds = forms.ChoiceField(choices=NUMBER_OF_ROUNDS_CHOICES, initial=(7, '7 rounds'), label='Number of rounds', label_suffix=": ")
 
+class CreateNewGameVsMachineForm(forms.Form):
+    NUMBER_OF_ROUNDS_CHOICES = [(x+3, f'{x+3} rounds') for x in range(9)]
+
+    your_name = forms.CharField(min_length=3, max_length=20, empty_value='cho-cho-lino', label='Your name', label_suffix=": ")
+    number_of_rounds = forms.ChoiceField(choices=NUMBER_OF_ROUNDS_CHOICES, initial=(7, '7 rounds'), label='Number of rounds', label_suffix=": ")
+
 class GameForm(forms.Form):
 
     def __init__(self, card_list, *args, **kwargs):

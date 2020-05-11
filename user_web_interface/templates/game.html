@@ -16,6 +16,8 @@
     <br>
     <h3 id="id_player" class="player_shower">{{ current_player }}</h3>
     <h3 id="id_player_number" style="visibility: hidden;"><span>{{ player_number }}</span></h3>
+        <img id="id_thinking_gif" style="max-height: 100px;" src="{% static 'thinking.gif' %}"
+         alt="GIF, of a rotating brain; machine is thinking...">
     <div>
         <br>
         <form id="id_form" action="{% url 'make_a_move' game_id %}" method="POST">
@@ -138,12 +140,24 @@
 					var updatedPlayerNumber = updatedPlayerNumberContainer[updatedPlayerNumberContainer.length -1];
 					var realNumberOfCards = countCardsInString(updatedForm);
 					var numberOfCardsInDOM = countCardsInDOM();
+					console.log(updatedPlayer);
 					if (realNumberOfCards == numberOfCardsInDOM) {
+						if (updatedPlayer == 'The Mashine') {
+							console.log('Its the machine!');
+							document.getElementById('id_thinking_gif').style.display = 'block';
+							setTimeout(function () {
+							window.location = '{% url 'make_a_mashine_move' game_id %}'
+							}, 2500);
+						}
 					}
 					else if (realNumberOfCards > numberOfCardsInDOM) {
 						window.location = '{% url 'end_round' game_id %}';
 					} else if (realNumberOfCards == 0) {
 						window.location = '{% url 'end_round' game_id %}';
+					} else if (updatedPlayer == 'The Mashine') {
+						console.log('Its the machine!');
+                                                
+						window.location = '{% url 'make_a_mashine_move' game_id %}';
 					} else {
 						$('#id_form').html(updatedForm);
 						$('#id_player').html(updatedPlayer);

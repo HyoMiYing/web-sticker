@@ -75,3 +75,7 @@ h1, h3 {
     text-align: center;
 }
 
+#id_thinking_gif  {
+    display: none;
+    margin: auto;
+}

@@ -4,13 +4,13 @@ from django.urls import reverse
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from user_web_interface.sticker_game_control import WebStickerGameManager
-from user_web_interface.forms import GameForm, CreateNewGameForm
+from user_web_interface.forms import GameForm, CreateNewGameForm, CreateNewGameVsMachineForm
 import re
 
 game_manager = WebStickerGameManager()
 
 def home(request):
-    return render(request, 'home.html', {'form': CreateNewGameForm()})
+    return render(request, 'home.html', {'form': CreateNewGameForm(), 'machine_form': CreateNewGameVsMachineForm()})
 
 def create_new_game(request):
     form = CreateNewGameForm(request.POST)
@@ -19,6 +19,15 @@ def create_new_game(request):
     else:
         raise Http404('Something went wrong. Game was not created.')
     return redirect('view_round', game_id)
+
+def create_new_mashine_game(request):
+    form = CreateNewGameVsMachineForm(request.POST)
+    if form.is_valid():
+        game_id = game_manager.instantiate_new_mashine_WebStickerGame(form.cleaned_data)
+    else:
+        raise Http404('Something went wrong. Game was not created.')
+    return redirect('view_round', game_id)
+
 
 def make_a_move(request, game_id):
     round_information = game_manager.get_round_information(game_id)
@@ -33,6 +42,11 @@ def make_a_move(request, game_id):
              return HttpResponseRedirect(reverse('view_round', args=(game_id,)))
     else:
         return render(request, 'game.html', {'form':form, 'current_player':round_information['player'], 'game_id':game_id, 'player_number': round_information['player_number']})
+
+def make_a_mashine_move(request, game_id):
+    game_manager.make_the_mashine_move(game_id)
+    return HttpResponseRedirect(reverse('view_round', args=(game_id,)))
+    
 
 def view_round(request, game_id):
     round_information = game_manager.get_round_information(game_id)

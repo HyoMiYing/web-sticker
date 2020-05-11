@@ -20,7 +20,9 @@ from user_web_interface import views
 urlpatterns = [
     path("", views.home, name='home'),
     path('new_game', views.create_new_game, name='new_game'),
+    path('new_mashine_game', views.create_new_mashine_game, name='new_mashine_game'),
     path('make_a_move/<int:game_id>', views.make_a_move, name='make_a_move'),
+    path('make_a_mashine_move/<int:game_id>', views.make_a_mashine_move, name='make_a_mashine_move'),
     path('game/<int:game_id>', views.view_round, name='view_round'),
     path('end_round/<int:game_id>', views.end_round, name='end_round'),
     path('end_game/<int:game_id>', views.end_game, name='end_game'),

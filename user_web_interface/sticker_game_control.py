@@ -28,6 +28,16 @@ class WebStickerGameManager(object):
         self.dictionary_of_games[id_of_new_instance] = new_instance
         return id_of_new_instance
 
+    def instantiate_new_mashine_WebStickerGame(self, data_from_form):
+        form_data = {}
+        form_data['player2'] = 'The Mashine'
+        form_data['player1'] = data_from_form['your_name']
+        form_data['number_of_rounds'] = data_from_form['number_of_rounds']
+        new_instance = WebStickerGame(form_data)
+        id_of_new_instance = self.find_new_id_in_dictionary_of_games()
+        self.dictionary_of_games[id_of_new_instance] = new_instance
+        return id_of_new_instance        
+
     def get_winner(self, game_id):
         correct_game = self.dictionary_of_games[game_id]
         winner = correct_game.last_winner
@@ -70,6 +80,11 @@ class WebStickerGameManager(object):
         removal_message = correct_game.remove_cards(post_data)
         return removal_message
 
+    def make_the_mashine_move(self, game_id):
+        correct_game = self.dictionary_of_games[game_id]
+        removal_message = correct_game.make_the_mashine_move()
+        return removal_message
+
 class WebStickerGame(object):
 
     def __init__(self, cleaned_form_data):
@@ -90,8 +105,6 @@ class WebStickerGame(object):
         except KeyError:
             return 'Game over'
         current_games_position = current_game.position
-        if current_games_position == [0, 0, 0, 0]:
-            return False
         current_player = current_game.player
         if current_player == 'player1' and self.current_round % 2 == 1:
             current_player_name = self.player1
@@ -129,6 +142,10 @@ class WebStickerGame(object):
             self.set_last_winner(str(player_number))
             self.current_round += 1
         return move_message
+
+    def make_the_mashine_move(self):
+        current_game = self.lukas_sticker.igre[self.current_round-1]
+        current_game.move_maschine('biginner')
 
     def set_last_winner(self, player_number):
         if player_number == '1' and self.current_round % 2 == 1:
