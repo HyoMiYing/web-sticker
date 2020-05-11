@@ -151,7 +151,6 @@ class FunctionalTest(StaticLiveServerTestCase):
                     following_player = player2
                 else:
                     following_player = player1
-                self.assert_correct_player_has_won_this_round(player2, actual_round_number)
                 self.assert_round_x_of_y_is_finished(actual_round_number, number_of_rounds)
                 continue_link = self.browser.find_element_by_link_text('Continue') 
                 continue_link.click()
@@ -166,10 +165,10 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.play_a_game_with_x_rounds_with_player1_and_player2(3, 'Ajoy', 'Rokovsky')
 
         # The round 3 of 3 is over. Now the winner of the whole game is Rok.
-	# That is because Rok had won 3 games and Rok had won 0 games.
+	# That is because Rok had won 3 games and Ajoy had won 1 games.
         self.assertIn('Rokovsky, you won the game!', self.browser.find_element_by_tag_name('body').text)
-        self.assertIn('Number of rounds Rokovsky won: 3', self.browser.find_element_by_tag_name('body').text)
-        self.assertIn('Number of rounds Ajoy won: 0', self.browser.find_element_by_tag_name('body').text)
+        self.assertIn('Number of rounds Rokovsky won: 2', self.browser.find_element_by_tag_name('body').text)
+        self.assertIn('Number of rounds Ajoy won: 1', self.browser.find_element_by_tag_name('body').text)
 
         # And there is also a link to another game
         self.browser.find_element_by_link_text('Play New Game')
@@ -299,7 +298,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.get(self.live_server_url)
 
         # He sees it is a 2 player game. He decides he will play the game with his friend, Jacques.
-        self.start_new_game('Sacre Bleu', 'Jacques', 5)
+        self.start_new_game('Sacre Bleu', 'Jacques', 3)
 
         # Now Sacre Bleu makes a move
         self.validate_current_player('Sacre Bleu')
@@ -386,10 +385,50 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.remove_cards_from_row(3, 2)
         time.sleep(0.5)
 
+    # And Jacques has won! What a champion! They now play the last round...
         self.assert_correct_player_has_won_this_round('Jacques', 2)
         self.assert_correct_player_has_won_this_round_in_foreign_browser('Jacques', 2, self.browserJacques)
         time.sleep(0.5)
 
-	# Jacques is confused, because Sacre Bleu doesn't make a move. Tired of waiting he also goes
+        continue_link = self.browser.find_element_by_link_text('Continue') 
+        continue_link.click()
+
+        continue_link = self.browserJacques.find_element_by_link_text('Continue') 
+        continue_link.click()
+        time.sleep(0.5)
+
+    # Sacre Bleu starts it....
+        self.assert_browsers_on_both_ends_display_correct_data('Sacre Bleu', 'rgb(255, 0, 0)', self.browserJacques)
+        self.remove_cards_from_row(7, 4)
+        time.sleep(0.5)
+
+        self.assert_browsers_on_both_ends_display_correct_data('Jacques', 'rgb(0, 0, 255)', self.browserJacques)
+        self.remove_cards_from_row_in_foreign_browser(1, 1, self.browserJacques)
+        time.sleep(0.5)
+
+        self.assert_browsers_on_both_ends_display_correct_data('Sacre Bleu', 'rgb(255, 0, 0)', self.browserJacques)
+        self.remove_cards_from_row(3, 2)
+        time.sleep(0.5)
+
+        self.assert_browsers_on_both_ends_display_correct_data('Jacques', 'rgb(0, 0, 255)', self.browserJacques)
+        self.remove_cards_from_row_in_foreign_browser(4, 3, self.browserJacques)
+        time.sleep(0.5)
+
+        self.assert_browsers_on_both_ends_display_correct_data('Sacre Bleu', 'rgb(255, 0, 0)', self.browserJacques)
+        self.remove_cards_from_row_in_foreign_browser(1, 3, self.browserJacques)
+        time.sleep(0.5)
+
+    # And loses it
+    # Now the game is over.
+
+        self.assertIn('Jacques, you won the game!', self.browserJacques.find_element_by_tag_name('body').text)
+        self.assertIn('Number of rounds Sacre Bleu won: 1', self.browserJacques.find_element_by_tag_name('body').text)
+        self.assertIn('Number of rounds Jacques won: 2', self.browserJacques.find_element_by_tag_name('body').text)
+
+        self.assertIn('Jacques, you won the game!', self.browser.find_element_by_tag_name('body').text)
+        self.assertIn('Number of rounds Sacre Bleu won: 1', self.browser.find_element_by_tag_name('body').text)
+        self.assertIn('Number of rounds Jacques won: 2', self.browser.find_element_by_tag_name('body').text)
+
+	# Jacques is surprised of Sacre Bleus intellect. Tired they bof go
 	# to rest.
         self.browserJacques.quit()
