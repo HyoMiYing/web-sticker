@@ -131,6 +131,12 @@
 				if (data.indexOf("ajax") == -1) {
 					console.log('This is not game.html anymore!');
 					location.reload();
+				} else if (data.indexOf("game.css") == -1) {
+					console.log('Game over!');
+					var pathName = location.pathname;
+					var newPathName = pathName.replace('game', 'end_game');
+					window.location.replace(location.hostname + newPathName);
+					// console.log(location.hostname + newPathName);
 				} else {
 					var updatedForm = data.slice(data.indexOf('<input type="hidden" name="csrfmiddlewaretoken"'), data.indexOf('</form>'));
 					var updatedPlayer = data.slice(data.indexOf('class="player_shower"') + 22, data.indexOf('</h3>'));
