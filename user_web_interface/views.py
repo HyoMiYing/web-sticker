@@ -37,8 +37,8 @@ def make_a_move(request, game_id):
 def view_round(request, game_id):
     round_information = game_manager.get_round_information(game_id)
     # In case the round ended
-    if round_information == False:
-        return redirect('end_round', game_id)
+    if round_information == 'Game over':
+        return redirect('end_game', game_id)
     elif round_information['position'] == [0, 0, 0, 0]:
         return redirect('end_round', game_id)
     form = GameForm(round_information['position'])

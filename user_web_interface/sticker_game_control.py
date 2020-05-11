@@ -85,7 +85,10 @@ class WebStickerGame(object):
 
     def get_round_information(self):
         # Go to Igra class and read player and position values
-        current_game = self.lukas_sticker.igre[self.current_round-1]
+        try:
+            current_game = self.lukas_sticker.igre[self.current_round-1]
+        except KeyError:
+            return 'Game over'
         current_games_position = current_game.position
         if current_games_position == [0, 0, 0, 0]:
             return False
