@@ -44,7 +44,11 @@ def make_a_move(request, game_id):
         return render(request, 'game.html', {'form':form, 'current_player':round_information['player'], 'game_id':game_id, 'player_number': round_information['player_number']})
 
 def make_a_mashine_move(request, game_id):
-    game_manager.make_the_mashine_move(game_id)
+    removal_message = game_manager.make_the_mashine_move(game_id)
+    if re.search('Game over', removal_message):
+        return HttpResponseRedirect(reverse('end_round', args=(game_id,)))
+    else:
+        return HttpResponseRedirect(reverse('view_round', args=(game_id,)))
     return HttpResponseRedirect(reverse('view_round', args=(game_id,)))
     
 

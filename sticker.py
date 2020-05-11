@@ -38,12 +38,12 @@ class Igra:
 
     def move_maschine(self, difficulty):
         if self.validation_difficulty(difficulty) == 'Difficulty invalid':
-            return 'Difficulty invalid', None, None
+            return 'Difficulty invalid'
         else:
             row, num = maschine_play.maschine(self.position, difficulty)
             return_string = self.move(row, num)
 
-            return return_string, row, num
+            return return_string
 
 
     def end(self):

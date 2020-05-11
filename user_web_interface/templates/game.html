@@ -93,7 +93,7 @@
 	var audio = document.getElementById('move_sound')
 
 	// Do AJAX to keep game fresh
-	setInterval(updateDOMIfNeeded, 500);
+	document.addEventListener('load', setInterval(updateDOMIfNeeded, 500));
 
 	function countCardsInDOM() {
 		let allCards = document.getElementsByTagName('label');
@@ -106,9 +106,6 @@
 		return count
 	}
 
-	function blinkPageTitle(playerName) {
-	
-	}
 
 	function blinkTitleUntillPageIsClicked() {
 		var interval = setInterval(function(){
@@ -164,7 +161,6 @@
 						console.log(updatedPlayerNumber);
 						updateUIColor(updatedPlayerNumber);
 						breakSpaceTheCards();
-						audio.play();
 						blinkTitleUntillPageIsClicked();
 					}
 				}

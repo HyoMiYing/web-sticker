@@ -145,7 +145,13 @@ class WebStickerGame(object):
 
     def make_the_mashine_move(self):
         current_game = self.lukas_sticker.igre[self.current_round-1]
-        current_game.move_maschine('biginner')
+        move_message = current_game.move_maschine('biginner')
+        if re.search('Game over', move_message):
+            player_number = list(move_message)[-1]
+            self.set_last_winner(str(player_number))
+            self.current_round += 1
+        return move_message
+
 
     def set_last_winner(self, player_number):
         if player_number == '1' and self.current_round % 2 == 1:
