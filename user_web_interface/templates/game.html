@@ -93,7 +93,7 @@
 	var audio = document.getElementById('move_sound')
 
 	// Do AJAX to keep game fresh
-	document.addEventListener('load', setInterval(updateDOMIfNeeded, 500));
+	setTimeout(setInterval(updateDOMIfNeeded, 500));
 
 	function countCardsInDOM() {
 		let allCards = document.getElementsByTagName('label');
