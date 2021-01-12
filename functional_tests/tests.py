@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
+from webdriver_manager.firefox import GeckoDriverManager
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 import time
 import unittest
@@ -9,7 +10,7 @@ import os
 class FunctionalTest(StaticLiveServerTestCase):
 
     def setUp(self):
-        self.browser = webdriver.Firefox()
+        self.browser = webdriver.Firefox(executable_path=GeckoDriverManager().install())
         staging_server = os.environ.get('STAGING_SERVER')
         if staging_server:
             self.live_server_url = 'http://' + staging_server
@@ -317,7 +318,9 @@ class FunctionalTest(StaticLiveServerTestCase):
 
 	# Now Sacre Bleu decides to wait. He leaves the Sticker tab to be open and goes to read Wikipedia
         self.browser.execute_script("window.open('');")
-        self.browser.switch_to.window(self.browser.window_handles[1])
+        time.sleep(1)
+        print(f'These are the current browser\'s window handles: {self.browser.window_handles[1]}')
+        self.browser.switch_to.window(f'{self.browser.window_handles[1]}')
         self.browser.get('https://en.wikipedia.org')
 
 	# After some time, Jacques reads Sacre Bleu's SMS and goes to the URL.
